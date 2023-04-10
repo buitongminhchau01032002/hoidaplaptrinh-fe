@@ -14,7 +14,7 @@
 
 @layer components {
     .btn {
-        @apply flex items-center justify-center rounded text-white bg-primary;
+        @apply flex items-center justify-center rounded bg-primary text-white;
     }
     .btn + .btn {
         @apply ml-2;
@@ -40,7 +40,7 @@
     }
 
     .text-input {
-        @apply h-9 w-full rounded-md border border-gray-400 px-3 focus-within:!border-primary hover:border-gray-500;
+        @apply h-10 w-full rounded-md border border-gray-400 px-3 focus-within:!border-primary hover:border-gray-500;
     }
 
     .text-input.invalid {
@@ -48,7 +48,7 @@
     }
 
     .container {
-        @apply my-0 mx-auto max-w-[1200px];
+        @apply mx-auto my-0 max-w-[1200px];
     }
 
     .text-input.disabled {
