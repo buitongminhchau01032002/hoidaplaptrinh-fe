@@ -109,7 +109,7 @@ export default function Header() {
             ) : (
                 <div className="flex items-center space-x-2">
                     <Link
-                        href="/signup"
+                        href="/register"
                         className="flex h-9 min-w-[120px] items-center justify-center rounded-md border border-primary px-5 text-sm font-medium text-primary-dark transition hover:bg-primary hover:text-white"
                     >
                         Đăng ký

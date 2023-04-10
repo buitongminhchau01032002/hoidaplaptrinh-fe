@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function LoginPage() {
     return (
         <div className="mx-auto mt-[100px] w-[500px] rounded-lg bg-white p-10 shadow">
@@ -16,7 +18,7 @@ export default function LoginPage() {
             </div>
 
             <div className="mb-3">
-                <button className="flex h-9 w-full items-center justify-center rounded-md bg-primary px-5 font-medium text-white transition hover:bg-primary-dark">
+                <button className="flex h-10 w-full items-center justify-center rounded-md bg-primary px-5 font-medium text-white transition hover:bg-primary-dark">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="h-6 w-6"
@@ -37,7 +39,9 @@ export default function LoginPage() {
 
             <div className="flex justify-center">
                 <span>Not registered yet?</span>
-                <button className="ml-2 font-semibold text-primary hover:text-primary-dark">Register now</button>
+                <Link href="/register" className="ml-2 font-semibold text-primary hover:text-primary-dark">
+                    Register now
+                </Link>
             </div>
         </div>
     );
