@@ -1,7 +1,7 @@
 export default function DetailPostPage() {
     return (
-        <div className="mt-5 space-y-4">
-            <div className="flex rounded-lg bg-white">
+        <div className="mt-5 rounded-lg bg-white">
+            <div className="flex rounded-lg bg-white pt-2">
                 {/* LEFT */}
                 <div className="flex h-full w-16 flex-col items-center p-3">
                     {/* SCORE */}
@@ -78,7 +78,7 @@ export default function DetailPostPage() {
                             There are many variations of passages of Lorem Ipsum available, but the
                             majority have suffered alteration in some form, by injected humour, or
                             randomised words which don't look even slightly believable. If you are
-                            going to{' '}
+                            going to
                         </div>
                     </div>
                 </div>
@@ -141,7 +141,92 @@ export default function DetailPostPage() {
                     </div>
                 </div>
             </div>
-            <div className="p-3">Comment</div>
+            <p className="mt-5 px-3 text-lg font-bold">Comments</p>
+            <div className="px-3 py-2">
+                <div className="flex space-x-2 border-b pb-3">
+                    <button className="h-9 w-9 overflow-hidden rounded-full bg-red-500">
+                        {/* <img src=""/> */}
+                    </button>
+                    <input
+                        className="h-28 flex-1 rounded border px-3 py-2 focus:border-primary"
+                        type="text"
+                        placeholder="Write comment..."
+                    />
+                </div>
+                <div className="pt-3">
+                    <div className="flex px-2 py-3">
+                        {/* SCORE */}
+                        <div className="flex flex-col items-center border-r pr-3">
+                            <button className="-rotate-90 text-primary">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    className="h-5 w-5"
+                                >
+                                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                                </svg>
+                            </button>
+
+                            <div className="font-semibold">45</div>
+
+                            <button className="rotate-90 text-gray-600">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    className="h-5 w-5"
+                                >
+                                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="flex-1 space-y-2 pl-3">
+                            <div className="flex items-center justify-between">
+                                {/* User */}
+                                <div className="flex items-center">
+                                    <div className="flex items-center">
+                                        <div className="h-7 w-7 rounded-full bg-red-500"></div>
+                                        <p className="ml-2 text-sm font-bold text-gray-700">
+                                            Nguyễn Văn A
+                                        </p>
+                                    </div>
+                                    <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                        Member
+                                    </div>
+                                </div>
+
+                                {/* Date */}
+                                <div className="text-sm text-gray-600">March 10, 2023</div>
+                            </div>
+                            {/* Content */}
+                            <div>
+                                There are many variations of passages of Lorem Ipsum available, but
+                                the majority have suffered alteration in some form, by injected
+                                humour, or randomised words which don't look even slightly
+                                believable. If you are going to
+                            </div>
+                            <button className="flex items-center space-x-2 rounded border px-2 py-0.5 hover:border-primary">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="h-4 w-4"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+                                    />
+                                </svg>
+                                <p className="text-sm">Reply</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
