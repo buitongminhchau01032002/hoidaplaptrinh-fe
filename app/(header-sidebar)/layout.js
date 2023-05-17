@@ -1,4 +1,5 @@
-import Header from '~/components/Header/Header';
+import Header from '~/components/Header';
+import Sidebar from './components/Sidebar';
 
 export default function DefaultLayout({ children }) {
     return (
@@ -6,8 +7,9 @@ export default function DefaultLayout({ children }) {
             <Header />
             <main className="mx-auto grid max-w-container grid-cols-3 gap-7 px-7 py-h-header">
                 <div className="col-span-2">{children}</div>
-                {/* <Sidebar /> */}
-                <p>SIDE BAR</p>
+                <div className="pt-5">
+                    <Sidebar />
+                </div>
             </main>
         </div>
     );

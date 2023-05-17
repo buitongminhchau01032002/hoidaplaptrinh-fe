@@ -5,7 +5,12 @@ export default function Home() {
             <div className="flex items-center justify-between rounded-lg bg-white p-3">
                 <div className="flex w-[200px] items-center justify-between rounded border px-3 py-1">
                     <span>Tất cả chủ đề</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-5 w-5"
+                    >
                         <path
                             fillRule="evenodd"
                             d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -15,7 +20,12 @@ export default function Home() {
                 </div>
                 <div className="flex w-[200px] items-center justify-between rounded border px-3 py-1">
                     <span>Mới nhất</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-5 w-5"
+                    >
                         <path
                             fillRule="evenodd"
                             d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
@@ -83,9 +93,13 @@ export default function Home() {
                             <div className="flex items-center">
                                 <div className="flex items-center">
                                     <div className="h-7 w-7 rounded-full bg-red-500"></div>
-                                    <p className="ml-2 text-sm font-bold text-gray-700">Nguyễn Văn A</p>
+                                    <p className="ml-2 text-sm font-bold text-gray-700">
+                                        Nguyễn Văn A
+                                    </p>
                                 </div>
-                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">Member</div>
+                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                    Member
+                                </div>
                             </div>
 
                             {/* Date */}
@@ -98,9 +112,10 @@ export default function Home() {
                                 Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS
                             </h2>
                             <div className="mt-2 text-gray-600">
-                                There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't
-                                look even slightly believable. If you are going to{' '}
+                                There are many variations of passages of Lorem Ipsum available, but
+                                the majority have suffered alteration in some form, by injected
+                                humour, or randomised words which don't look even slightly
+                                believable. If you are going to{' '}
                             </div>
                         </div>
                     </div>
@@ -221,9 +236,13 @@ export default function Home() {
                             <div className="flex items-center">
                                 <div className="flex items-center">
                                     <div className="h-7 w-7 rounded-full bg-red-500"></div>
-                                    <p className="ml-2 text-sm font-bold text-gray-700">Nguyễn Văn A</p>
+                                    <p className="ml-2 text-sm font-bold text-gray-700">
+                                        Nguyễn Văn A
+                                    </p>
                                 </div>
-                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">Member</div>
+                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                    Member
+                                </div>
                             </div>
 
                             {/* Date */}
@@ -236,9 +255,10 @@ export default function Home() {
                                 Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS
                             </h2>
                             <div className="mt-2 text-gray-600">
-                                There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't
-                                look even slightly believable. If you are going to{' '}
+                                There are many variations of passages of Lorem Ipsum available, but
+                                the majority have suffered alteration in some form, by injected
+                                humour, or randomised words which don't look even slightly
+                                believable. If you are going to{' '}
                             </div>
                         </div>
                     </div>
@@ -359,9 +379,13 @@ export default function Home() {
                             <div className="flex items-center">
                                 <div className="flex items-center">
                                     <div className="h-7 w-7 rounded-full bg-red-500"></div>
-                                    <p className="ml-2 text-sm font-bold text-gray-700">Nguyễn Văn A</p>
+                                    <p className="ml-2 text-sm font-bold text-gray-700">
+                                        Nguyễn Văn A
+                                    </p>
                                 </div>
-                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">Member</div>
+                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                    Member
+                                </div>
                             </div>
 
                             {/* Date */}
@@ -374,9 +398,10 @@ export default function Home() {
                                 Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS
                             </h2>
                             <div className="mt-2 text-gray-600">
-                                There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't
-                                look even slightly believable. If you are going to{' '}
+                                There are many variations of passages of Lorem Ipsum available, but
+                                the majority have suffered alteration in some form, by injected
+                                humour, or randomised words which don't look even slightly
+                                believable. If you are going to{' '}
                             </div>
                         </div>
                     </div>
@@ -497,9 +522,13 @@ export default function Home() {
                             <div className="flex items-center">
                                 <div className="flex items-center">
                                     <div className="h-7 w-7 rounded-full bg-red-500"></div>
-                                    <p className="ml-2 text-sm font-bold text-gray-700">Nguyễn Văn A</p>
+                                    <p className="ml-2 text-sm font-bold text-gray-700">
+                                        Nguyễn Văn A
+                                    </p>
                                 </div>
-                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">Member</div>
+                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                    Member
+                                </div>
                             </div>
 
                             {/* Date */}
@@ -512,9 +541,10 @@ export default function Home() {
                                 Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS
                             </h2>
                             <div className="mt-2 text-gray-600">
-                                There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't
-                                look even slightly believable. If you are going to{' '}
+                                There are many variations of passages of Lorem Ipsum available, but
+                                the majority have suffered alteration in some form, by injected
+                                humour, or randomised words which don't look even slightly
+                                believable. If you are going to{' '}
                             </div>
                         </div>
                     </div>
