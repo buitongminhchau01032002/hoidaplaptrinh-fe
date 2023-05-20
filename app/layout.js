@@ -1,6 +1,6 @@
 import '../styles/tailwind.css';
-import 'react-toastify/dist/ReactToastify.css';
 import Provider from '~/app/components/Provider';
+import ToastContainerClient from './components/ToastContainer';
 
 export const metadata = {
     title: 'Create Next App',
@@ -11,7 +11,10 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <body className="bg-gray-100">
-                <Provider>{children}</Provider>
+                <Provider>
+                    {children}
+                    <ToastContainerClient />
+                </Provider>
             </body>
         </html>
     );

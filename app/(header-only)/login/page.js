@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { userActions } from '~/redux/slices/userSlice';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const validationSchema = Yup.object({
     email: Yup.string().required('Email required!').email('Email not valid!'),
@@ -16,9 +17,8 @@ const validationSchema = Yup.object({
 export default function LoginPage() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
-    const showSuccessNoti = () => toast.success('Login Successfully');
-    const showErorrNoti = () => toast.error('Something went wrong');
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -29,6 +29,7 @@ export default function LoginPage() {
     });
 
     function handleLogin(values) {
+        setLoading(true);
         fetch('http://localhost:8080/api/v1/auth/login', {
             method: 'POST',
             headers: {
@@ -38,11 +39,9 @@ export default function LoginPage() {
         })
             .then((res) => res.json())
             .then((resBody) => {
-                if (resBody.error) {
-                    console.log('Đăng nhập không thành công');
+                if (resBody.error_key) {
                     console.log(resBody);
-                    // error = resBody.error.message;
-                    showErorrNoti();
+                    toast.error(resBody?.message || 'Something went wrong');
                     return;
                 }
 
@@ -50,12 +49,15 @@ export default function LoginPage() {
                 user.token = resBody.token;
                 dispatch(userActions.login(user));
                 console.log(user);
-                // alert(JSON.stringify(user, null, 2));
-                showSuccessNoti();
-                // navigate('/');
+                toast.success('Login Successfully');
+                router.push('/');
             })
             .catch((err) => {
                 console.log(err);
+                toast.error('Something went wrong');
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }
 
@@ -134,7 +136,7 @@ export default function LoginPage() {
                             d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                         />
                     </svg>
-                    <span className="ml-2">Login</span>
+                    <span className="ml-2">{!loading ? 'Login' : 'Logining'}</span>
                 </button>
             </div>
 
