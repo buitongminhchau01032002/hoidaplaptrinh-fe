@@ -1,4 +1,5 @@
 import '../styles/tailwind.css';
+import 'react-toastify/dist/ReactToastify.css';
 import Provider from '~/app/components/Provider';
 
 export const metadata = {
