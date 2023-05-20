@@ -13,8 +13,8 @@ export default function Header() {
 
     return (
         <header className="fixed z-10 flex h-14 w-full items-center justify-between border-b bg-white px-16">
-            <Link href="/">
-                <img className="h-full object-cover" src="/vercel.svg" />
+            <Link href="/" className="h-7">
+                <img className="h-full object-cover object-center" src="/next.svg" />
             </Link>
 
             {/* SEARCH */}
@@ -53,7 +53,10 @@ export default function Header() {
                         </Link>
 
                         <Popover className="relative">
-                            <Popover.Button as="button" className="outline-none hover:text-primary-dark">
+                            <Popover.Button
+                                as="button"
+                                className="outline-none hover:text-primary-dark"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -69,13 +72,21 @@ export default function Header() {
                             </Popover.Button>
 
                             <Popover.Panel className="absolute right-0 top-full z-10 w-80 translate-y-3 space-y-3 rounded-lg border bg-white p-3 shadow-xl">
-                                <Link href={'/profile/' + user._id} className="flex w-full items-center border-b pb-2">
+                                <Link
+                                    href={'/profile/' + user._id}
+                                    className="flex w-full items-center border-b pb-2"
+                                >
                                     <div className="h-11 w-11 overflow-hidden rounded-full">
-                                        <img className="h-full w-full object-cover" src={user?.avatar} />
+                                        <img
+                                            className="h-full w-full object-cover"
+                                            src={user?.avatar}
+                                        />
                                     </div>
                                     <div className="ml-3 flex-1">
                                         <p className="text-left font-bold">{user?.name}</p>
-                                        <p className="text-left text-sm text-gray-600">{user?.email}</p>
+                                        <p className="text-left text-sm text-gray-600">
+                                            {user?.email}
+                                        </p>
                                     </div>
                                 </Link>
 
