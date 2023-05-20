@@ -1,5 +1,5 @@
 import '../styles/tailwind.css';
-import Provider from '~/components/Provider';
+import Provider from '~/app/components/Provider';
 
 export const metadata = {
     title: 'Create Next App',

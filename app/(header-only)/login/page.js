@@ -14,14 +14,16 @@ export default function LoginPage() {
                 <input className="text-input" type="password" placeholder="Password" />
             </div>
             <div className="mb-3 flex justify-end">
-                <button className="font-semibold text-primary hover:text-primary-dark">Forgot password?</button>
+                <button className="font-semibold text-primary hover:text-primary-dark">
+                    Forgot password?
+                </button>
             </div>
 
             <div className="mb-3">
                 <button className="flex h-10 w-full items-center justify-center rounded-md bg-primary px-5 font-medium text-white transition hover:bg-primary-dark">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="h-6 w-6"
+                        className="h-6 w-6"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -39,7 +41,10 @@ export default function LoginPage() {
 
             <div className="flex justify-center">
                 <span>Not registered yet?</span>
-                <Link href="/register" className="ml-2 font-semibold text-primary hover:text-primary-dark">
+                <Link
+                    href="/register"
+                    className="ml-2 font-semibold text-primary hover:text-primary-dark"
+                >
                     Register now
                 </Link>
             </div>
