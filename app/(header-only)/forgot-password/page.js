@@ -11,25 +11,26 @@ import { useRouter } from 'next/navigation';
 
 const validationSchema = Yup.object({
     email: Yup.string().required('Email required!').email('Email not valid!'),
-    password: Yup.string().required('Password required!'),
 });
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [comfirmidEmail, setComfirmidEmail] = useState(false);
     const router = useRouter();
 
     const formik = useFormik({
         initialValues: {
             email: '',
-            password: '',
         },
         validationSchema,
-        onSubmit: handleLogin,
+        onSubmit: handleForgotPassword,
     });
 
-    function handleLogin(values) {
-        setLoading(true);
+    function handleForgotPassword(values) {
+        // setLoading(true);
+        setComfirmidEmail(true);
+        return;
         fetch('http://localhost:8080/api/v1/auth/login', {
             method: 'POST',
             headers: {
@@ -49,7 +50,7 @@ export default function LoginPage() {
                 user.token = resBody.token;
                 dispatch(userActions.login(user));
                 console.log(user);
-                toast.success('Login Successfully');
+                toast.success('ForgotPassword Successfully');
                 router.push('/');
             })
             .catch((err) => {
@@ -61,13 +62,13 @@ export default function LoginPage() {
             });
     }
 
-    return (
+    return !comfirmidEmail ? (
         <form
             onSubmit={formik.handleSubmit}
             className="mx-auto mt-[100px] w-[500px] rounded-lg bg-white p-10 shadow"
         >
-            <h2 className="mb-1 text-4xl font-semibold">Login</h2>
-            <p className="mb-4 text-gray-600">Hi, Welcome back 👋</p>
+            <h2 className="mb-1 text-4xl font-semibold">Forgot Password</h2>
+            <p className="mb-4 text-gray-600">Don't worry! You can reset your password now. 🔥</p>
             <div className="mb-1">
                 <div className="mb-1 font-medium">Email</div>
                 <input
@@ -89,35 +90,6 @@ export default function LoginPage() {
                     {formik.errors.email || 'No message'}
                 </span>
             </div>
-            <div className="mb-1">
-                <div className="mb-1 font-medium">Password</div>
-                <input
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    name="password"
-                    value={formik.values.password}
-                    className={clsx('text-input', {
-                        invalid: formik.touched.password && formik.errors.password,
-                    })}
-                    type="password"
-                    placeholder="Password"
-                />
-                <span
-                    className={clsx('text-sm text-red-500 opacity-0', {
-                        'opacity-100': formik.touched.password && formik.errors.password,
-                    })}
-                >
-                    {formik.errors.password || 'No message'}
-                </span>
-            </div>
-            <div className="mb-3 flex justify-end">
-                <Link
-                    href="/forgot-password"
-                    className="cursor-pointer font-semibold text-primary hover:text-primary-dark"
-                >
-                    Forgot password?
-                </Link>
-            </div>
 
             <div className="mb-3">
                 <button
@@ -125,33 +97,42 @@ export default function LoginPage() {
                     disabled={!formik.dirty || !formik.isValid || loading}
                     className="btn h-10 w-full"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                        />
-                    </svg>
-                    <span className="ml-2">{!loading ? 'Login' : 'Logining'}</span>
+                    <span className="ml-2">
+                        {!loading ? 'Comfirm email' : 'Sending to you email'}
+                    </span>
                 </button>
             </div>
 
             <div className="flex justify-center">
-                <span>Not registered yet?</span>
+                <span>Already have an account?</span>
                 <Link
-                    href="/register"
+                    href="/login"
                     className="ml-2 font-semibold text-primary hover:text-primary-dark"
                 >
-                    Register now
+                    Login now
                 </Link>
             </div>
         </form>
+    ) : (
+        <div className="mx-auto mt-[100px] w-[500px] rounded-lg bg-white p-10 shadow">
+            <h2 className="mb-1 text-4xl font-semibold">Check your email</h2>
+            <p className="mb-4 text-gray-600">Check your email to reset password. 🥑</p>
+
+            <div className="mb-3">
+                <Link className="btn h-10 w-full" href="/">
+                    <span className="ml-2">Back to homepage!</span>
+                </Link>
+            </div>
+
+            <div className="flex justify-center">
+                <span>Already have an account?</span>
+                <Link
+                    href="/login"
+                    className="ml-2 font-semibold text-primary hover:text-primary-dark"
+                >
+                    Login now
+                </Link>
+            </div>
+        </div>
     );
 }
