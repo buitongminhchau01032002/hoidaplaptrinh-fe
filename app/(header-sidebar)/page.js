@@ -54,7 +54,7 @@ export default function Home() {
             </div>
             <div className="mt-4 space-y-4">
                 {posts.map((post) => (
-                    <div className="flex rounded-lg bg-white">
+                    <div key={post?._id} className="flex rounded-lg bg-white">
                         {/* LEFT */}
                         <div className="flex h-full w-16 flex-col items-center p-3">
                             {/* SCORE */}
@@ -139,11 +139,11 @@ export default function Home() {
                             {/* Main */}
                             <Link href={'/' + post._id} className="mt-4 block">
                                 <h2 className="text-lg font-bold">{post.title}</h2>
-                                <div
-                                    className="mt-2 text-gray-600"
-                                    dangerouslySetInnerHTML={{ __html: post.content }}
-                                ></div>
                             </Link>
+                            <div
+                                className="mt-2 text-gray-600"
+                                dangerouslySetInnerHTML={{ __html: post.content }}
+                            ></div>
                         </div>
 
                         {/* RIGHT */}
