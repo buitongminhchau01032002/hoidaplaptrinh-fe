@@ -58,7 +58,7 @@ function Birthday({ user, currentUser, onChange, isOwner }) {
     return (
         <div>
             <form className="mb-4" onSubmit={formik.handleSubmit}>
-                <label className="font-semibold">Ngày sinh</label>
+                <label className="font-semibold">Birthday</label>
                 <div className="mt-1 flex items-center space-x-1">
                     <input
                         name="birthday"
