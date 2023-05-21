@@ -6,7 +6,7 @@ export default function Sidebar() {
     return (
         <div>
             <div className="mb-5">
-                <p className="text-xl font-semibold">Categories</p>
+                <p className="text-xl font-semibold">Topics</p>
                 <div className="mt-3 flex flex-wrap">
                     <button
                         style={{

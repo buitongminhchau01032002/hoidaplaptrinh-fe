@@ -14,7 +14,8 @@ export default function Header() {
     return (
         <header className="fixed z-10 flex h-14 w-full items-center justify-between border-b bg-white px-16">
             <Link href="/" className="h-7">
-                <img className="h-full object-cover object-center" src="/next.svg" />
+                {/* <img className="h-full object-cover object-center" src="/next.svg" /> */}
+                <div className="text-3xl font-bold">DevZ</div>
             </Link>
 
             {/* SEARCH */}
