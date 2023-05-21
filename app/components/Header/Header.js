@@ -42,7 +42,7 @@ export default function Header() {
                                 />
                             </svg>
                         </span>
-                        Tạo bài đăng
+                        Create post
                     </Link>
 
                     <div className="flex items-center space-x-1">

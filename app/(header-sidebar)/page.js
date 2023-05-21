@@ -125,9 +125,9 @@ export default function Home() {
                                                 post?.author?.last_name}
                                         </p>
                                     </div>
-                                    {/* <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                    <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
                                         Member
-                                    </div> */}
+                                    </div>
                                 </Link>
 
                                 {/* Date */}

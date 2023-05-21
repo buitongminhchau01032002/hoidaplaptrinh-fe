@@ -85,9 +85,9 @@ export default function DetailPostPage({ params }) {
                                     {post?.author?.first_name + ' ' + post?.author?.last_name}
                                 </p>
                             </div>
-                            {/* <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                        Member
-                                    </div> */}
+                            <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                Member
+                            </div>
                         </Link>
 
                         {/* Date */}
@@ -155,7 +155,7 @@ export default function DetailPostPage({ params }) {
 
                         <span className="ml-1">0</span>
                     </div>
-                    {/* <div className="text-green-600">
+                    <div className="text-green-600">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -168,10 +168,10 @@ export default function DetailPostPage({ params }) {
                                 clipRule="evenodd"
                             />
                         </svg>
-                    </div> */}
+                    </div>
                 </div>
             </div>
-            <p className="mt-5 px-3 text-lg font-bold">Comments</p>
+            <p className="mt-5 px-3 text-lg font-bold">Answers</p>
             <div className="px-3 py-2">
                 <div className="flex space-x-2 border-b pb-3">
                     <button className="h-9 w-9 overflow-hidden rounded-full bg-red-500">
@@ -180,7 +180,7 @@ export default function DetailPostPage({ params }) {
                     <input
                         className="h-28 flex-1 rounded border px-3 py-2 focus:border-primary"
                         type="text"
-                        placeholder="Write comment..."
+                        placeholder="Write answer..."
                     />
                 </div>
                 <div className="pt-3">
@@ -210,6 +210,20 @@ export default function DetailPostPage({ params }) {
                                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                                 </svg>
                             </button>
+                            <div className="text-green-600">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="h-10 w-10"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </div>
                         </div>
                         <div className="flex-1 space-y-2 pl-3">
                             <div className="flex items-center justify-between">
