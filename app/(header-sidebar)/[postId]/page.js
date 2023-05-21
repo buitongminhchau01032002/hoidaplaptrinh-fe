@@ -1,4 +1,22 @@
-export default function DetailPostPage() {
+'use client';
+
+import moment from 'moment';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { images } from '~/next.config';
+
+export default function DetailPostPage({ params }) {
+    const [post, setPost] = useState({});
+    useEffect(() => {
+        fetch('http://localhost:8080/api/v1/posts/' + params.postId)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.error_key) {
+                    console.log(error);
+                }
+                setPost(data.post);
+            });
+    }, []);
     return (
         <div className="mt-5 rounded-lg bg-white">
             <div className="flex rounded-lg bg-white pt-2">
@@ -6,7 +24,7 @@ export default function DetailPostPage() {
                 <div className="flex h-full w-16 flex-col items-center p-3">
                     {/* SCORE */}
                     <div className="flex flex-col items-center">
-                        <button className="-rotate-90 text-primary">
+                        <button className="-rotate-90 text-gray-600">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
@@ -17,7 +35,7 @@ export default function DetailPostPage() {
                             </svg>
                         </button>
 
-                        <div className="text-lg font-semibold">45</div>
+                        <div className="text-lg font-semibold">0</div>
 
                         <button className="rotate-90 text-gray-600">
                             <svg
@@ -55,32 +73,44 @@ export default function DetailPostPage() {
                     {/* Top */}
                     <div className="flex items-center justify-between">
                         {/* User */}
-                        <div className="flex items-center">
+                        <Link href={'profile/' + post.author?._id} className="flex items-center">
                             <div className="flex items-center">
-                                <div className="h-7 w-7 rounded-full bg-red-500"></div>
-                                <p className="ml-2 text-sm font-bold text-gray-700">Nguyễn Văn A</p>
+                                <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
+                                    <img
+                                        className="h-full w-full object-cover object-center"
+                                        src={post?.author?.avatar}
+                                    />
+                                </div>
+                                <p className="ml-2 text-sm font-bold text-gray-700">
+                                    {post?.author?.first_name + ' ' + post?.author?.last_name}
+                                </p>
                             </div>
-                            <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                Member
-                            </div>
-                        </div>
+                            {/* <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                        Member
+                                    </div> */}
+                        </Link>
 
                         {/* Date */}
-                        <div className="text-sm text-gray-600">March 10, 2023</div>
+                        <div className="text-sm text-gray-600">
+                            {moment(post.created_at).format('DD/MM/YYYY')}
+                        </div>
                     </div>
 
                     {/* Main */}
-                    <div className="mt-4">
-                        <h2 className="text-lg font-bold">
-                            Beautiful hand-crafted SVG icons, by the makers of Tailwind CSS
-                        </h2>
-                        <div className="mt-2 text-gray-600">
-                            There are many variations of passages of Lorem Ipsum available, but the
-                            majority have suffered alteration in some form, by injected humour, or
-                            randomised words which don't look even slightly believable. If you are
-                            going to
-                        </div>
+                    <div className="mt-4 block">
+                        <h2 className="text-lg font-bold">{post.title}</h2>
+                        <div
+                            className="mt-2 text-gray-600"
+                            dangerouslySetInnerHTML={{ __html: post.content }}
+                        ></div>
                     </div>
+                    {post.images && (
+                        <div className="mt-5">
+                            {post.images.map((image) => (
+                                <img className="mb-3 h-full w-full" src={image} />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* RIGHT */}
@@ -100,7 +130,7 @@ export default function DetailPostPage() {
                                 d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
                             />
                         </svg>
-                        <span className="ml-1">109</span>
+                        <span className="ml-1">0</span>
                     </div>
                     <div className="flex items-center">
                         <svg
@@ -123,9 +153,9 @@ export default function DetailPostPage() {
                             />
                         </svg>
 
-                        <span className="ml-1">200</span>
+                        <span className="ml-1">0</span>
                     </div>
-                    <div className="text-green-600">
+                    {/* <div className="text-green-600">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -138,7 +168,7 @@ export default function DetailPostPage() {
                                 clipRule="evenodd"
                             />
                         </svg>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <p className="mt-5 px-3 text-lg font-bold">Comments</p>

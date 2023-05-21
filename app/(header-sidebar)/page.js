@@ -1,6 +1,7 @@
 'use client';
 
 import moment from 'moment';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
@@ -107,7 +108,10 @@ export default function Home() {
                             {/* Top */}
                             <div className="flex items-center justify-between">
                                 {/* User */}
-                                <div className="flex items-center">
+                                <Link
+                                    href={'profile/' + post.author?._id}
+                                    className="flex items-center"
+                                >
                                     <div className="flex items-center">
                                         <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
                                             <img
@@ -124,7 +128,7 @@ export default function Home() {
                                     {/* <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
                                         Member
                                     </div> */}
-                                </div>
+                                </Link>
 
                                 {/* Date */}
                                 <div className="text-sm text-gray-600">
@@ -133,13 +137,13 @@ export default function Home() {
                             </div>
 
                             {/* Main */}
-                            <div className="mt-4">
+                            <Link href={'/' + post._id} className="mt-4 block">
                                 <h2 className="text-lg font-bold">{post.title}</h2>
                                 <div
                                     className="mt-2 text-gray-600"
                                     dangerouslySetInnerHTML={{ __html: post.content }}
                                 ></div>
-                            </div>
+                            </Link>
                         </div>
 
                         {/* RIGHT */}
