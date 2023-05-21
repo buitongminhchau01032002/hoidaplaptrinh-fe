@@ -6,18 +6,17 @@ import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { userActions } from '~/redux/slices/userSlice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const validationSchema = Yup.object({
     email: Yup.string().required('Email required!').email('Email not valid!'),
 });
 
-export default function ForgotPasswordPage() {
+export default function ForgotPasswordPage({ params }) {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [comfirmidEmail, setComfirmidEmail] = useState(false);
-    const router = useRouter();
 
     const formik = useFormik({
         initialValues: {
@@ -28,10 +27,8 @@ export default function ForgotPasswordPage() {
     });
 
     function handleForgotPassword(values) {
-        // setLoading(true);
-        setComfirmidEmail(true);
-        return;
-        fetch('http://localhost:8080/api/v1/auth/login', {
+        setLoading(true);
+        fetch('http://localhost:8080/api/v1/auth/forgot_password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -46,12 +43,7 @@ export default function ForgotPasswordPage() {
                     return;
                 }
 
-                const user = resBody.user;
-                user.token = resBody.token;
-                dispatch(userActions.login(user));
-                console.log(user);
-                toast.success('ForgotPassword Successfully');
-                router.push('/');
+                setComfirmidEmail(true);
             })
             .catch((err) => {
                 console.log(err);

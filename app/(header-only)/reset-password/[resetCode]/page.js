@@ -13,7 +13,7 @@ const validationSchema = Yup.object({
     password: Yup.string().required('Password required!'),
 });
 
-export default function ResetPasswordPage() {
+export default function ResetPasswordPage({ params }) {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [reseted, setReseted] = useState(false);
@@ -28,15 +28,13 @@ export default function ResetPasswordPage() {
     });
 
     function handleResetPassword(values) {
-        // setLoading(true);
-        setReseted(true);
-        return;
-        fetch('http://localhost:8080/api/v1/auth/login', {
-            method: 'POST',
+        setLoading(true);
+        fetch('http://localhost:8080/api/v1/auth/reset_password/' + params.resetCode, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(values),
+            body: JSON.stringify({ ...values, confirm_password: values.password }),
         })
             .then((res) => res.json())
             .then((resBody) => {
@@ -46,12 +44,7 @@ export default function ResetPasswordPage() {
                     return;
                 }
 
-                const user = resBody.user;
-                user.token = resBody.token;
-                dispatch(userActions.login(user));
-                console.log(user);
-                toast.success('ResetPassword Successfully');
-                router.push('/');
+                setReseted(true);
             })
             .catch((err) => {
                 console.log(err);
