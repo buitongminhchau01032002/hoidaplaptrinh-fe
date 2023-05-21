@@ -113,7 +113,7 @@ export default function Header() {
                                     onClick={() => dispatch(userActions.logout())}
                                     className="flex h-9 w-full min-w-[120px] items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
                                 >
-                                    Đăng xuất
+                                    Logout
                                 </button>
                             </Popover.Panel>
                         </Popover>
@@ -125,13 +125,13 @@ export default function Header() {
                         href="/register"
                         className="flex h-9 min-w-[120px] items-center justify-center rounded-md border border-primary px-5 text-sm font-medium text-primary-dark transition hover:bg-primary hover:text-white"
                     >
-                        Đăng ký
+                        Register
                     </Link>
                     <Link
                         href="/login"
                         className="flex h-9 min-w-[120px] items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
                     >
-                        Đăng nhập
+                        Login
                     </Link>
                 </div>
             )}

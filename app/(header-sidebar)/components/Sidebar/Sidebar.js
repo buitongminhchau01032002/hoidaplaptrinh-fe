@@ -1,3 +1,5 @@
+'use client';
+
 import colorizeCategory from '~/utils/colorizeCategory';
 
 export default function Sidebar() {
@@ -19,46 +21,56 @@ export default function Sidebar() {
                     <button
                         style={{
                             backgroundColor: colorizeCategory({
-                                createdAt: '2023-04-07T05:49:10.259+00:00',
+                                createdAt: '2023-04-07T05:42:23.259+00:00',
                             }),
                         }}
                         className=" mb-1 mr-1 rounded px-3 py-1 font-semibold text-white"
                     >
-                        Javascript
+                        HTML, CSS
                     </button>
                     <button
                         style={{
                             backgroundColor: colorizeCategory({
-                                createdAt: '2023-04-07T05:49:10.259+00:00',
+                                createdAt: '2023-04-07T05:20:53.259+00:00',
                             }),
                         }}
                         className=" mb-1 mr-1 rounded px-3 py-1 font-semibold text-white"
                     >
-                        Javascript
+                        Golang
                     </button>
                     <button
                         style={{
                             backgroundColor: colorizeCategory({
-                                createdAt: '2023-04-07T05:49:10.259+00:00',
+                                createdAt: '2023-04-07T05:10:28.259+00:00',
                             }),
                         }}
                         className=" mb-1 mr-1 rounded px-3 py-1 font-semibold text-white"
                     >
-                        Javascript
+                        Pascal
                     </button>
                     <button
                         style={{
                             backgroundColor: colorizeCategory({
-                                createdAt: '2023-04-07T05:49:10.259+00:00',
+                                createdAt: '2023-04-03T05:30:03.259+00:00',
                             }),
                         }}
                         className=" mb-1 mr-1 rounded px-3 py-1 font-semibold text-white"
                     >
-                        Javascript
+                        Java
+                    </button>
+                    <button
+                        style={{
+                            backgroundColor: colorizeCategory({
+                                createdAt: '2023-04-03T05:30:40.259+00:00',
+                            }),
+                        }}
+                        className=" mb-1 mr-1 rounded px-3 py-1 font-semibold text-white"
+                    >
+                        C#
                     </button>
                 </div>
             </div>
-            <div className="mb-5">
+            {/* <div className="mb-5">
                 <p className="text-xl font-semibold">Newest</p>
                 <div className="mt-3 space-y-3">
                     <div className="rounded-lg bg-white p-3">
@@ -110,7 +122,7 @@ export default function Sidebar() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }
