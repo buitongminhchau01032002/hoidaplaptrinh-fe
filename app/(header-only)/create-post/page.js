@@ -6,6 +6,9 @@ import clsx from 'clsx';
 import { useCallback, useState } from 'react';
 import PostContentEditor from '~/app/components/PostContentEditor';
 import ImageInput from '~/app/components/ImageInput';
+import { useSelector } from 'react-redux';
+import { userSelector } from '~/redux/selectors';
+import { useRouter } from 'next/navigation';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -14,8 +17,10 @@ const validationSchema = Yup.object({
 
 export default function CreatePostPage() {
     const [loading, setLoading] = useState(false);
+    const user = useSelector(userSelector);
     const showSuccessNoti = () => toast.success('Create post successfully!');
     const showErorrNoti = () => toast.error('Something is wrong!');
+    const router = useRouter();
     const formik = useFormik({
         initialValues: {
             title: '',
@@ -23,8 +28,45 @@ export default function CreatePostPage() {
             images: [],
         },
         validationSchema,
-        onSubmit: () => {},
+        onSubmit: handleCreatePost,
     });
+
+    async function handleCreatePost(values) {
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            if (values.images.length > 0) {
+                values.images.forEach((image) => {
+                    formData.append('images', image.file);
+                });
+            }
+            // Upload
+            const uploadResult = await fetch(
+                'http://localhost:8080/api/v1/upload/images/multiple',
+                {
+                    method: 'POST',
+                    body: formData,
+                }
+            ).then((res) => res.json());
+            const linkImages = uploadResult.urls;
+
+            const data = await fetch('http://localhost:8080/api/v1/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + user?.token,
+                },
+                body: JSON.stringify({ ...values, images: linkImages }),
+            }).then((res) => res.json());
+            router.push('/');
+            showSuccessNoti();
+        } catch (error) {
+            console.log(error);
+            showErorrNoti();
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const handleChangeContent = useCallback((newContent) => {
         formik.setFieldValue('content', newContent);
@@ -37,7 +79,7 @@ export default function CreatePostPage() {
         <div className="mt-5">
             <div className="mx-auto max-w-[720px] rounded-lg bg-white p-4">
                 <p className="py-7 text-center text-2xl font-medium">CREATE POST</p>
-                <form>
+                <form onSubmit={formik.handleSubmit}>
                     <div className="mb-4">
                         <label className="font-semibold">Tiêu đề</label>
                         <input
@@ -87,51 +129,53 @@ export default function CreatePostPage() {
                     <div className="mb-4">
                         <ImageInput formik={formik} formikField="images" />
                     </div>
-                    <button
-                        type="submit"
-                        className={clsx(
-                            'flex h-9 min-w-[120px] items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark',
-                            {
-                                'pointer-events-none opacity-50': !formik.dirty || loading,
-                            }
-                        )}
-                    >
-                        <span className="pr-1">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                                className="h-6 w-6 pt-0.5"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </span>
-                        Tạo bài đăng
-                    </button>
+                    <div className="flex items-center justify-between">
+                        <button
+                            type="submit"
+                            className={clsx(
+                                'flex h-9 min-w-[120px] items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark',
+                                {
+                                    'pointer-events-none opacity-50': !formik.dirty || loading,
+                                }
+                            )}
+                        >
+                            <span className="pr-1">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="h-6 w-6 pt-0.5"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </span>
+                            Tạo bài đăng
+                        </button>
 
-                    {loading && (
-                        <div className="ml-4 flex items-center font-medium text-primary-dark">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-6 w-6 animate-spin"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                                />
-                            </svg>
-                            <div className="ml-1">Đang tạo bài đăng</div>
-                        </div>
-                    )}
+                        {loading && (
+                            <div className="ml-4 flex items-center font-medium text-primary-dark">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="h-6 w-6 animate-spin"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                                    />
+                                </svg>
+                                <div className="ml-1">Đang tạo bài đăng</div>
+                            </div>
+                        )}
+                    </div>
                 </form>
             </div>
         </div>
