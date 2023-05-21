@@ -3,13 +3,13 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import PostContentEditor from '~/app/components/PostContentEditor';
+import ImageInput from '~/app/components/ImageInput';
 
 const validationSchema = Yup.object({
-    title: Yup.string().required('Trường này bắt buộc').min(4, 'Tiêu đề phải ít nhất 4 kí tự'),
-    content: Yup.string().required('Trường này bắt buộc'),
-    categoryId: Yup.string().required('Trường này bắt buộc'),
-    tagName: Yup.string().required('Trường này bắt buộc'),
+    title: Yup.string().required('Title is required'),
+    content: Yup.string().required('Content is required'),
 });
 
 export default function CreatePostPage() {
@@ -20,14 +20,19 @@ export default function CreatePostPage() {
         initialValues: {
             title: '',
             content: '',
-            categoryId: '',
-            tagId: '',
-            tagName: '',
             images: [],
         },
         validationSchema,
         onSubmit: () => {},
     });
+
+    const handleChangeContent = useCallback((newContent) => {
+        formik.setFieldValue('content', newContent);
+    }, []);
+
+    const setTouchContent = useCallback(() => {
+        formik.setFieldTouched('content', true);
+    }, []);
     return (
         <div className="mt-5">
             <div className="mx-auto max-w-[720px] rounded-lg bg-white p-4">
@@ -54,6 +59,33 @@ export default function CreatePostPage() {
                         >
                             {formik.errors.title || 'No error message'}
                         </div>
+                    </div>
+                    <div className="mb-4">
+                        <label className="font-semibold">Content</label>
+                        <div
+                            className={clsx('text-editor mt-1 rounded-sm', {
+                                'ring-1 ring-red-500':
+                                    formik.errors.content && formik.touched.content,
+                            })}
+                        >
+                            <PostContentEditor
+                                setFormik={handleChangeContent}
+                                initValue={formik.initialValues.content}
+                                setTouch={setTouchContent}
+                            />
+                        </div>
+                        <div
+                            className={clsx('invisible text-sm', {
+                                '!visible text-red-500':
+                                    formik.errors.content && formik.touched.content,
+                            })}
+                        >
+                            {formik.errors.content || 'No error message'}
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <ImageInput formik={formik} formikField="images" />
                     </div>
                     <button
                         type="submit"
