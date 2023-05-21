@@ -24,8 +24,8 @@ const reHydrateStore = () => {
 
 const store = configureStore({
     reducer: { user: userReducer },
-    // preloadedState: reHydrateStore(),
-    // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),
+    preloadedState: reHydrateStore(),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),
 });
 
 export default store;

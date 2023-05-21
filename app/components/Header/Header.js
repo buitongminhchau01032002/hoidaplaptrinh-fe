@@ -82,8 +82,10 @@ export default function Header() {
                                             src={user?.avatar}
                                         />
                                     </div>
-                                    <div className="ml-3 flex-1">
-                                        <p className="text-left font-bold">{user?.name}</p>
+                                    <div className="ml-3 overflow-hidden">
+                                        <p className="text-left font-bold">
+                                            {user?.first_name + ' ' + user?.last_name}
+                                        </p>
                                         <p className="text-left text-sm text-gray-600">
                                             {user?.email}
                                         </p>
