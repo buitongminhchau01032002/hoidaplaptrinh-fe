@@ -10,11 +10,11 @@ export default function DetailPostPage({ params }) {
     useEffect(() => {
         fetch(`${API}/posts/` + params.postId)
             .then((res) => res.json())
-            .then((data) => {
-                if (data.error_key) {
-                    console.log(error);
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    return;
                 }
-                setPost(data.post);
+                setPost(resJson.data);
             });
     }, []);
     return (

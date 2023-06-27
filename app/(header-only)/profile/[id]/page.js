@@ -20,13 +20,13 @@ export default function Profile({ params }) {
     function getUser() {
         fetch(`${API}/users/` + id)
             .then((res) => res.json())
-            .then((data) => {
-                if (data.error_key) {
-                    console.log(data.error_key);
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson.error_key);
                     setUser(null);
                     return;
                 }
-                setUser(data);
+                setUser(resJson.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -40,7 +40,7 @@ export default function Profile({ params }) {
 
     return (
         <div>
-            <h2 className="py-10 text-center text-lg font-bold">Thông tin tài khoản</h2>
+            <h2 className="py-10 text-center text-lg font-bold">Profile</h2>
 
             {/* AVATAR AND INFOR  */}
             <div className="mt-4 grid grid-cols-3 gap-7">
