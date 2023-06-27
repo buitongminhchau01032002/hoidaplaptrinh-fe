@@ -104,7 +104,7 @@ export default function Home() {
                                         </p>
                                     </div>
                                     <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                        Member
+                                        {post.author?.role}
                                     </div>
                                 </Link>
 

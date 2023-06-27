@@ -10,10 +10,12 @@ import { useSelector } from 'react-redux';
 import { userSelector } from '~/redux/selectors';
 import { useRouter } from 'next/navigation';
 import { API } from '~/constants';
+import TopicInput from '../components/TopicInput';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
     content: Yup.string().required('Content is required'),
+    topicId: Yup.string().required('Topic is required'),
 });
 
 export default function CreatePostPage() {
@@ -26,6 +28,7 @@ export default function CreatePostPage() {
         initialValues: {
             title: '',
             content: '',
+            topicId: '',
             images: [],
         },
         validationSchema,
@@ -122,6 +125,19 @@ export default function CreatePostPage() {
                         >
                             {formik.errors.content || 'No error message'}
                         </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="font-semibold">Topic</label>
+                        <TopicInput
+                            name="topicId"
+                            className={clsx('text-input mt-1', {
+                                invalid: formik.errors.topicId && formik.touched.topicId,
+                            })}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.topicId}
+                        />
                     </div>
 
                     <div className="mb-4">

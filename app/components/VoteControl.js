@@ -7,8 +7,8 @@ import { userSelector } from '~/redux/selectors';
 
 export default function VoteControl({ upVotes, downVotes }) {
     const user = useSelector(userSelector);
-    const [_upVotes, setUpVotes] = useState(upVotes);
-    const [_downVotes, setDownVotes] = useState(downVotes);
+    const [_upVotes, setUpVotes] = useState(upVotes || []);
+    const [_downVotes, setDownVotes] = useState(downVotes || []);
     const score = _upVotes.length - _downVotes.length;
     const canUp = user?._id && !_upVotes.includes(user._id);
     const canDown = user?._id && !_downVotes.includes(user._id);
