@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import { API } from '~/constants';
 
 const validationSchema = Yup.object({
     currentPassword: Yup.string()
@@ -35,7 +36,7 @@ function Password({ user, currentUser, onChange, isOwner }) {
 
     function handleSubmit(values) {
         setLoading(true);
-        fetch('http://localhost:8080/api/v1/users/change_password', {
+        fetch(`${API}/users/change_password`, {
             method: 'PATCH',
             headers: {
                 Authorization: 'Bearer ' + currentUser?.token,

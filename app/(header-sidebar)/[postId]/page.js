@@ -3,12 +3,12 @@
 import moment from 'moment';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { images } from '~/next.config';
+import { API } from '~/constants';
 
 export default function DetailPostPage({ params }) {
     const [post, setPost] = useState({});
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/posts/' + params.postId)
+        fetch(`${API}/posts/` + params.postId)
             .then((res) => res.json())
             .then((data) => {
                 if (data.error_key) {

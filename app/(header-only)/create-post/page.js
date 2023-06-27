@@ -9,6 +9,7 @@ import ImageInput from '~/app/components/ImageInput';
 import { useSelector } from 'react-redux';
 import { userSelector } from '~/redux/selectors';
 import { useRouter } from 'next/navigation';
+import { API } from '~/constants';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -41,16 +42,13 @@ export default function CreatePostPage() {
                 });
             }
             // Upload
-            const uploadResult = await fetch(
-                'http://localhost:8080/api/v1/upload/images/multiple',
-                {
-                    method: 'POST',
-                    body: formData,
-                }
-            ).then((res) => res.json());
+            const uploadResult = await fetch(`${API}/upload/images/multiple`, {
+                method: 'POST',
+                body: formData,
+            }).then((res) => res.json());
             const linkImages = uploadResult.urls;
 
-            const data = await fetch('http://localhost:8080/api/v1/posts', {
+            const data = await fetch(`${API}/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

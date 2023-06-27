@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { userActions } from '~/redux/slices/userSlice';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { API } from '~/constants';
 
 const validationSchema = Yup.object({
     email: Yup.string().required('Email required!').email('Email not valid!'),
@@ -28,7 +29,7 @@ export default function ForgotPasswordPage({ params }) {
 
     function handleForgotPassword(values) {
         setLoading(true);
-        fetch('http://localhost:8080/api/v1/auth/forgot_password', {
+        fetch(`${API}/auth/forgot_password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

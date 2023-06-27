@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { API } from '~/constants';
 import { userActions } from '~/redux/slices/userSlice';
 
 export default function Avatar({ user, currentUser, isOwner, onChange }) {
@@ -21,11 +22,11 @@ export default function Avatar({ user, currentUser, isOwner, onChange }) {
             setLoading(true);
 
             try {
-                const uploadObj = await fetch('http://localhost:8080/api/v1/upload/images/single', {
+                const uploadObj = await fetch(`${API}/upload/images/single`, {
                     method: 'POST',
                     body: formData,
                 }).then((res) => res.json());
-                const data = await fetch('http://localhost:8080/api/v1/users/update', {
+                const data = await fetch(`${API}/users/update`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',

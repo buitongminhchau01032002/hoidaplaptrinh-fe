@@ -3,12 +3,13 @@
 import moment from 'moment';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { API } from '~/constants';
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/posts')
+        fetch(`${API}/posts`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.error_key) {

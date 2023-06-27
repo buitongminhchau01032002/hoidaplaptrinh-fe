@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { userActions } from '~/redux/slices/userSlice';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { API } from '~/constants';
 
 const validationSchema = Yup.object({
     password: Yup.string().required('Password required!'),
@@ -29,7 +30,7 @@ export default function ResetPasswordPage({ params }) {
 
     function handleResetPassword(values) {
         setLoading(true);
-        fetch('http://localhost:8080/api/v1/auth/reset_password/' + params.resetCode, {
+        fetch(`${API}/auth/reset_password/` + params.resetCode, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import InforGroup from './components/InforGroup';
 import { userSelector } from '~/redux/selectors';
 import Avatar from './components/Avatar';
+import { API } from '~/constants';
 
 export default function Profile({ params }) {
     const currentUser = useSelector(userSelector);
@@ -17,7 +18,7 @@ export default function Profile({ params }) {
     }, [id]);
 
     function getUser() {
-        fetch('http://localhost:8080/api/v1/users/' + id)
+        fetch(`${API}/users/` + id)
             .then((res) => res.json())
             .then((data) => {
                 if (data.error_key) {

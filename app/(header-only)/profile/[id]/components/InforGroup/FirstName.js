@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
+import { API } from '~/constants';
 import { userActions } from '~/redux/slices/userSlice';
 
 const validationSchema = Yup.object({
@@ -24,7 +25,7 @@ function FirstName({ user, currentUser, onChange, isOwner }) {
 
     function handleSubmit(values) {
         setLoading(true);
-        fetch(`http://localhost:8080/api/v1/users/update`, {
+        fetch(`${API}/users/update`, {
             method: 'PATCH',
             headers: {
                 Authorization: 'Bearer ' + currentUser?.token,

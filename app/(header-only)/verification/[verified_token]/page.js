@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { API } from '~/constants';
 
 export default function VerifyPage({ params }) {
     const router = useRouter();
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/auth/verification/' + params.verified_token, {
+        fetch(`${API}/auth/verification/` + params.verified_token, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

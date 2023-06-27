@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { userActions } from '~/redux/slices/userSlice';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { API } from '~/constants';
 
 const validationSchema = Yup.object({
     email: Yup.string().required('Email required!').email('Email not valid!'),
@@ -30,7 +31,7 @@ export default function LoginPage() {
 
     function handleLogin(values) {
         setLoading(true);
-        fetch('http://localhost:8080/api/v1/auth/login', {
+        fetch(`${API}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

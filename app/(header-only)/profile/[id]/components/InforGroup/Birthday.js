@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import moment from 'moment';
 import { userActions } from '~/redux/slices/userSlice';
 import { toast } from 'react-toastify';
+import { API } from '~/constants';
 
 const validationSchema = Yup.object({
     birthday: Yup.string(),
@@ -27,7 +28,7 @@ function Birthday({ user, currentUser, onChange, isOwner }) {
     function handleSubmit(values) {
         setLoading(true);
         const birthday = values.birthday;
-        fetch('http://localhost:8080/api/v1/users/update', {
+        fetch(`${API}/users/update`, {
             method: 'PATCH',
             headers: {
                 Authorization: 'Bearer ' + currentUser?.token,

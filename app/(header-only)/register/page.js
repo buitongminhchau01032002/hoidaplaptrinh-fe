@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import clsx from 'clsx';
+import { API } from '~/constants';
 
 const validationSchema = Yup.object({
     email: Yup.string().required('Email required!').email('Email not valid!'),
@@ -32,7 +33,7 @@ export default function RegisterPage() {
 
     function handleRegister(values) {
         setLoading(true);
-        fetch('http://localhost:8080/api/v1/auth/signup', {
+        fetch(`${API}/auth/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
