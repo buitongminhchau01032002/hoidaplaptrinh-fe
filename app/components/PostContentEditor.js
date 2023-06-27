@@ -1,7 +1,7 @@
 import { useRef, useImperativeHandle, forwardRef, memo } from 'react';
 import JoditEditor from 'jodit-react';
 
-const BUTTONS = ['bold', 'italic', 'underline', 'link', 'ul', 'eraser'];
+const BUTTONS = ['paragraph', 'bold', 'italic', 'underline', 'link', 'ul', 'eraser'];
 
 const PostContentEditor = ({ setFormik, initValue, setTouch }) => {
     const editor = useRef(null);

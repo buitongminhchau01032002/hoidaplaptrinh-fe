@@ -11,11 +11,11 @@ export default function Home() {
     useEffect(() => {
         fetch(`${API}/posts`)
             .then((res) => res.json())
-            .then((data) => {
-                if (data.error_key) {
+            .then((resJson) => {
+                if (resJson.error_key) {
                     console.log(error);
                 }
-                setPosts(data.posts);
+                setPosts(resJson.data);
             });
     }, []);
     return (
@@ -54,7 +54,7 @@ export default function Home() {
                 </div>
             </div>
             <div className="mt-4 space-y-4">
-                {posts.map((post) => (
+                {posts?.map((post) => (
                     <div key={post?._id} className="flex rounded-lg bg-white">
                         {/* LEFT */}
                         <div className="flex h-full w-16 flex-col items-center p-3">

@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import clsx from 'clsx';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PostContentEditor from '~/app/components/PostContentEditor';
 import ImageInput from '~/app/components/ImageInput';
 import { useSelector } from 'react-redux';

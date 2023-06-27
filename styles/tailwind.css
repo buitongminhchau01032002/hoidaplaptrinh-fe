@@ -71,4 +71,14 @@
         background-color: #ccc;
         border-radius: 5px;
     }
+
+    .text-editor a {
+        @apply text-primary-dark underline decoration-primary-dark;
+    }
+    .text-editor ul {
+        @apply list-disc px-5;
+    }
+    .text-editor pre {
+        @apply bg-slate-200;
+    }
 }

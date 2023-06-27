@@ -46,8 +46,8 @@ export default function LoginPage() {
                     return;
                 }
 
-                const user = resBody.user;
-                user.token = resBody.token;
+                const user = resBody.data.user;
+                user.token = resBody.data.token;
                 dispatch(userActions.login(user));
                 console.log(user);
                 toast.success('Login Successfully');
