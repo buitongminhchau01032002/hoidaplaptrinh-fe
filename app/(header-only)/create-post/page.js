@@ -15,20 +15,19 @@ import TopicInput from '../components/TopicInput';
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
     content: Yup.string().required('Content is required'),
-    topicId: Yup.string().required('Topic is required'),
+    topic_id: Yup.string().required('Topic is required'),
 });
 
 export default function CreatePostPage() {
     const [loading, setLoading] = useState(false);
     const user = useSelector(userSelector);
     const showSuccessNoti = () => toast.success('Create post successfully!');
-    const showErorrNoti = () => toast.error('Something is wrong!');
     const router = useRouter();
     const formik = useFormik({
         initialValues: {
             title: '',
             content: '',
-            topicId: '',
+            topic_id: '',
             images: [],
         },
         validationSchema,
@@ -38,18 +37,23 @@ export default function CreatePostPage() {
     async function handleCreatePost(values) {
         setLoading(true);
         try {
-            const formData = new FormData();
+            let linkImages;
             if (values.images.length > 0) {
+                const formData = new FormData();
                 values.images.forEach((image) => {
                     formData.append('images', image.file);
                 });
+
+                // Upload
+                const uploadResult = await fetch(`${API}/upload/images/multiple`, {
+                    method: 'POST',
+                    body: formData,
+                }).then((res) => res.json());
+                if (uploadResult.error_key) {
+                    throw uploadResult.message;
+                }
+                linkImages = uploadResult.urls;
             }
-            // Upload
-            const uploadResult = await fetch(`${API}/upload/images/multiple`, {
-                method: 'POST',
-                body: formData,
-            }).then((res) => res.json());
-            const linkImages = uploadResult.urls;
 
             const data = await fetch(`${API}/posts`, {
                 method: 'POST',
@@ -59,11 +63,15 @@ export default function CreatePostPage() {
                 },
                 body: JSON.stringify({ ...values, images: linkImages }),
             }).then((res) => res.json());
+            console.log(data);
+            if (data.error_key) {
+                throw data.message;
+            }
             router.push('/');
             showSuccessNoti();
         } catch (error) {
             console.log(error);
-            showErorrNoti();
+            toast.error(error || 'Something is wrong!');
         } finally {
             setLoading(false);
         }
@@ -130,14 +138,22 @@ export default function CreatePostPage() {
                     <div className="mb-4">
                         <label className="font-semibold">Topic</label>
                         <TopicInput
-                            name="topicId"
+                            name="topic_id"
                             className={clsx('text-input mt-1', {
-                                invalid: formik.errors.topicId && formik.touched.topicId,
+                                invalid: formik.errors.topic_id && formik.touched.topic_id,
                             })}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            value={formik.values.topicId}
+                            value={formik.values.topic_id}
                         />
+                        <div
+                            className={clsx('invisible text-sm', {
+                                '!visible text-red-500':
+                                    formik.errors.topic_id && formik.touched.topic_id,
+                            })}
+                        >
+                            {formik.errors.topic_id || 'No er'}
+                        </div>
                     </div>
 
                     <div className="mb-4">
