@@ -1,97 +1,115 @@
 'use client';
 
-import { useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { API } from '~/constants';
+
+function stringToSlug(str) {
+    // remove accents
+    var from = 'àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñçýỳỹỵỷ',
+        to = 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeduuuuuuuuuuuoooooooooooooooooiiiiiaeiiouuncyyyyy';
+    for (var i = 0, l = from.length; i < l; i++) {
+        str = str.replace(RegExp(from[i], 'gi'), to[i]);
+    }
+
+    str = str
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\-]/g, '-')
+        .replace(/-+/g, '-');
+
+    return str;
+}
 
 function Search() {
     const [search, setSearch] = useState('');
+    const [posts, setPosts] = useState([]);
+    const [searchPosts, setSearchPosts] = useState([]);
+
+    useEffect(() => {
+        fetch(`${API}/posts`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(error);
+                }
+                setPosts(resJson.data);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!search) {
+            setSearchPosts([]);
+            return;
+        }
+        const newSearchPosts = posts
+            .filter((post) => stringToSlug(post.title).includes(stringToSlug(search)))
+            .slice(0, 5);
+        setSearchPosts(newSearchPosts);
+    }, [posts, search]);
+
     return (
-        <div className="group relative">
-            <div className="flex h-9 min-w-[520px] rounded-md border border-gray-400 focus-within:!border-primary hover:border-gray-500">
+        <div className="group group relative">
+            <div className="flex h-9 min-w-[520px] items-center rounded-md border border-gray-400 focus-within:!border-primary hover:border-gray-500">
+                <div className="pl-3 text-gray-600">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="h-5 w-5"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                        />
+                    </svg>
+                </div>
+
                 <input
-                    className="h-full flex-1 rounded-md px-3"
-                    placeholder="Tìm kiếm bài viết..."
+                    className="h-full flex-1 rounded-md px-2"
+                    placeholder="Search post ... "
                     onChange={(e) => setSearch(e.target.value)}
                     value={search}
                 />
             </div>
             {search.length > 0 && (
-                <div className="absolute left-0 right-0 top-10 bg-white p-2 shadow-sm">
+                <div className="invisible absolute left-0 right-0 top-10 rounded border bg-white p-2 shadow-lg group-focus-within:visible">
                     <div className="space-y-3">
-                        <div className="rounded-lg border bg-white p-3">
-                            <div className="flex items-center">
-                                <div className="flex items-center">
-                                    <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
-                                        <img
-                                            className="h-full w-full object-cover"
-                                            src="http://res.cloudinary.com/psncloud/image/upload/v1684641422/105511200.png"
-                                        />
+                        {searchPosts?.map((post) => (
+                            <div key={post._id} className="rounded-lg border bg-white p-3">
+                                <Link
+                                    href={'profile/' + post.author?._id}
+                                    className="flex items-center"
+                                >
+                                    <div className="flex items-center">
+                                        <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
+                                            <img
+                                                className="h-full w-full object-cover object-center"
+                                                src={post?.author?.avatar}
+                                            />
+                                        </div>
+                                        <p className="ml-2 text-sm font-bold text-gray-700">
+                                            {post?.author?.first_name +
+                                                ' ' +
+                                                post?.author?.last_name}
+                                        </p>
                                     </div>
-                                    <p className="ml-2 text-sm font-bold text-gray-700">
-                                        Minh Chau
-                                    </p>
-                                </div>
-                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                    Member
-                                </div>
-                            </div>
-                            <div className="py-1 font-bold">
-                                Xem hình mèo để có thể code ít bug hơn?
-                            </div>
-                            <div className="text-lgray-700 text-sm">
-                                Có phải việc xem hình mèo sẽ giúp code ít bug hơn không? Nếu đúng
-                                như vậy thì có thể tìm hình mèo ở đâu
-                            </div>
-                        </div>
-                        <div className="rounded-lg border bg-white p-3">
-                            <div className="flex items-center">
-                                <div className="flex items-center">
-                                    <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
-                                        <img
-                                            className="h-full w-full object-cover"
-                                            src="https://res.cloudinary.com/psncloud/image/upload/v1684654840/297441000.png"
-                                        />
+                                    <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                        {post.author?.role}
                                     </div>
-                                    <p className="ml-2 text-sm font-bold text-gray-700">
-                                        Tran Phuc
-                                    </p>
-                                </div>
-                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                    Member
-                                </div>
+                                </Link>
+                                <Link href={'/' + post._id} className="block">
+                                    <h2 className="py-1 font-bold">{post.title}</h2>
+                                    <div
+                                        className="text-sm text-gray-600"
+                                        dangerouslySetInnerHTML={{ __html: post.content }}
+                                    ></div>
+                                </Link>
                             </div>
-                            <div className="py-1 font-bold">
-                                Tài liệu học Design Pattern ở đâu là đầy đủ nhất?
-                            </div>
-                            <div className="text-lgray-700 text-sm">
-                                Mọi người cho em hỏi là một ứng dụng quản lý cần những Design
-                                Pattern nào?
-                            </div>
-                        </div>
-                        <div className="rounded-lg border bg-white p-3">
-                            <div className="flex items-center">
-                                <div className="flex items-center">
-                                    <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
-                                        <img
-                                            className="h-full w-full object-cover"
-                                            src="http://res.cloudinary.com/psncloud/image/upload/v1684641422/105511200.png"
-                                        />
-                                    </div>
-                                    <p className="ml-2 text-sm font-bold text-gray-700">
-                                        Minh Chau
-                                    </p>
-                                </div>
-                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                    Member
-                                </div>
-                            </div>
-                            <div className="py-1 font-bold">
-                                Cách kiểm tra 1 máy tính đã từng kết nối internet?
-                            </div>
-                            <div className="text-lgray-700 text-sm">
-                                Công ty mình không cho phép sử dụng máy tính tại công ty để truy cập
-                                internet và sắp tới mình được sếp giao nhiệm vụ
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             )}
