@@ -28,7 +28,7 @@ export default function Sidebar() {
                             key={topic._id}
                             href={'/?topic=413'}
                             style={{
-                                backgroundColor: colorizeCategory({ cteatedAt: topic.created_at }),
+                                backgroundColor: colorizeCategory({ createdAt: topic.created_at }),
                             }}
                             className=" mb-1 mr-1 rounded px-3 py-1 font-semibold text-white"
                         >
