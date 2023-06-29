@@ -22,8 +22,8 @@ export default function Sidebar() {
         <div>
             <div className="mb-5">
                 <p className="text-xl font-semibold">Topics</p>
-                <div className="mt-3 flex flex-wrap">
-                    {topics?.map((topic) => (
+                <div className="mt-3 rounded bg-white">
+                    {/* {topics?.map((topic) => (
                         <Link
                             key={topic._id}
                             href={'/?topic=413'}
@@ -34,7 +34,36 @@ export default function Sidebar() {
                         >
                             {topic.name}
                         </Link>
-                    ))}
+                    ))} */}
+
+                    <div className="border-b px-3 py-2 font-semibold text-primary">All topics</div>
+                    <div className="border-b px-3 py-2 font-semibold">Technology</div>
+                    <div className="border-b px-3 py-2 font-semibold">Discus</div>
+                    <div className="border-b px-3 py-2 font-semibold">Bug</div>
+                </div>
+            </div>
+            <div className="mb-5">
+                <p className="text-xl font-semibold">Popular tags</p>
+                <div className="mt-3 flex flex-wrap">
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
+                        Frontend
+                    </div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
+                        Backend
+                    </div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">Job</div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">Bug</div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
+                        Javascript
+                    </div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">Sql</div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">C++</div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
+                        Python
+                    </div>
+                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
+                        HTML, CSS
+                    </div>
                 </div>
             </div>
             <div className="mb-5">
@@ -46,21 +75,19 @@ export default function Sidebar() {
                                 <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
                                     <img
                                         className="h-full w-full object-cover"
-                                        src="http://res.cloudinary.com/psncloud/image/upload/v1684641422/105511200.png"
+                                        src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1143&q=80"
                                     />
                                 </div>
                                 <p className="ml-2 text-sm font-bold text-gray-700">Minh Chau</p>
                             </div>
                             <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                Member
+                                Administrator
                             </div>
                         </div>
-                        <div className="py-1 font-bold">
-                            Xem hình mèo để có thể code ít bug hơn?
-                        </div>
+                        <div className="py-1 font-bold">Làm sao để fomat code trong VS Code</div>
                         <div className="text-lgray-700 text-sm">
-                            Có phải việc xem hình mèo sẽ giúp code ít bug hơn không? Nếu đúng như
-                            vậy thì có thể tìm hình mèo ở đâu
+                            Chào mọi người! Hiện tài mình đang gặp vấn đề là không thể format code
+                            trong VS code được. Một...
                         </div>
                     </div>
                     <div className="rounded-lg bg-white p-3">
@@ -72,7 +99,7 @@ export default function Sidebar() {
                                         src="https://res.cloudinary.com/psncloud/image/upload/v1684654840/297441000.png"
                                     />
                                 </div>
-                                <p className="ml-2 text-sm font-bold text-gray-700">Tran Phuc</p>
+                                <p className="ml-2 text-sm font-bold text-gray-700">An Nguyen</p>
                             </div>
                             <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
                                 Member
@@ -95,7 +122,7 @@ export default function Sidebar() {
                                         src="http://res.cloudinary.com/psncloud/image/upload/v1684641422/105511200.png"
                                     />
                                 </div>
-                                <p className="ml-2 text-sm font-bold text-gray-700">Minh Chau</p>
+                                <p className="ml-2 text-sm font-bold text-gray-700">Tran Tuan</p>
                             </div>
                             <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
                                 Member

@@ -90,14 +90,14 @@ export default function CreatePostPage() {
                 <p className="py-7 text-center text-2xl font-medium">CREATE POST</p>
                 <form onSubmit={formik.handleSubmit}>
                     <div className="mb-4">
-                        <label className="font-semibold">Tiêu đề</label>
+                        <label className="font-semibold">Title</label>
                         <input
                             name="title"
                             type="text"
                             className={clsx('text-input mt-1', {
                                 invalid: formik.errors.title && formik.touched.title,
                             })}
-                            placeholder="Tiêu đề bài viết"
+                            placeholder="Post title"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.title}
@@ -157,6 +157,34 @@ export default function CreatePostPage() {
                     </div>
 
                     <div className="mb-4">
+                        <label className="font-semibold">Tag</label>
+                        <input
+                            name="title"
+                            type="text"
+                            className={clsx('text-input mt-1', {
+                                invalid: formik.errors.title && formik.touched.title,
+                            })}
+                            placeholder="Find and add tags..."
+                        />
+                        <div className="flex">
+                            <div className="mr-1 mt-1 rounded border bg-white px-2 py-1 text-sm">
+                                Bug
+                            </div>
+                            <div className="mr-1 mt-1 rounded border bg-white px-2 py-1 text-sm">
+                                Javascript
+                            </div>
+                        </div>
+                        <div
+                            className={clsx('invisible text-sm', {
+                                '!visible text-red-500':
+                                    formik.errors.title && formik.touched.title,
+                            })}
+                        >
+                            {formik.errors.title || 'No error message'}
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
                         <ImageInput formik={formik} formikField="images" />
                     </div>
                     <div className="flex items-center justify-between">
@@ -183,7 +211,7 @@ export default function CreatePostPage() {
                                     />
                                 </svg>
                             </span>
-                            Tạo bài đăng
+                            Create post
                         </button>
 
                         {loading && (
