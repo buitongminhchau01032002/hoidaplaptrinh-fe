@@ -52,7 +52,7 @@ export default function RegisterPage() {
             })
             .catch((err) => {
                 console.log(err);
-                toast.error('Something went wrong');
+                toast.error(err?.message || 'Something went wrong');
             })
             .finally(() => {
                 setLoading(false);
