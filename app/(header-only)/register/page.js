@@ -162,7 +162,7 @@ export default function RegisterPage() {
             <div className="flex justify-center">
                 <span>Already have an account?</span>
                 <Link
-                    href="/register"
+                    href="/login"
                     className="ml-2 font-semibold text-primary hover:text-primary-dark"
                 >
                     Login now
