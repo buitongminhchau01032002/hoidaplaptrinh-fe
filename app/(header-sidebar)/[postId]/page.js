@@ -402,10 +402,9 @@ export default function DetailPostPage({ params }) {
                                     <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
                                         Member
                                     </div>
+                                    {/* Date */}
+                                    <div className="ml-2 text-sm text-gray-600">• 27/6/2023</div>
                                 </div>
-
-                                {/* Date */}
-                                <div className="text-sm text-gray-600">27/6/2023</div>
                             </div>
                             {/* Content */}
                             <div>
@@ -560,10 +559,9 @@ export default function DetailPostPage({ params }) {
                                     <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
                                         Member
                                     </div>
+                                    {/* Date */}
+                                    <div className="ml-2 text-sm text-gray-600">• 25/6/2023</div>
                                 </div>
-
-                                {/* Date */}
-                                <div className="text-sm text-gray-600">25/6/2023</div>
                             </div>
                             {/* Content */}
                             <div>Có thể do máy của bạn không hỗ trợ format code đó.</div>

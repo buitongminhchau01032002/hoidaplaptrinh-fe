@@ -10,6 +10,10 @@ const ITEM = [
         name: 'Topics',
         link: '/topic',
     },
+    {
+        name: 'Users',
+        link: '/user',
+    },
 ];
 
 export default function ManageMenu() {
@@ -17,7 +21,9 @@ export default function ManageMenu() {
         <div className="bg-white">
             {ITEM.map((item, index) => (
                 <Link
-                    className={clsx('block border-b p-3 font-semibold')}
+                    className={clsx('block border-b p-3 font-semibold', {
+                        'text-primary': item.link === '/user',
+                    })}
                     key={index}
                     href={'/manage' + item.link}
                 >
