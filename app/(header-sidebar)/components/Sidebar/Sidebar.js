@@ -1,6 +1,8 @@
 'use client';
 
+import clsx from 'clsx';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { API } from '~/constants';
@@ -8,6 +10,8 @@ import colorizeCategory from '~/utils/colorizeCategory';
 
 export default function Sidebar() {
     const [topics, setTopics] = useState();
+    const router = useRouter();
+    const searchParams = useSearchParams();
     useEffect(() => {
         fetch(`${API}/topics`)
             .then((res) => res.json())
@@ -18,28 +22,40 @@ export default function Sidebar() {
                 setTopics(resJson.data);
             });
     }, []);
+    function handleTopicFilter(topic) {
+        const current = new URLSearchParams(Array.from(searchParams)); // -> has to use this form
+        current.set('topic', topic?._id || 'all');
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+
+        router.push(`${'/'}${query}`);
+    }
+    console.log(searchParams);
     return (
         <div>
             <div className="mb-5">
                 <p className="text-xl font-semibold">Topics</p>
                 <div className="mt-3 rounded bg-white">
-                    {/* {topics?.map((topic) => (
-                        <Link
+                    <div
+                        onClick={() => handleTopicFilter(null)}
+                        className={clsx('cursor-pointer border-b px-3 py-2 font-semibold', {
+                            'text-primary':
+                                !searchParams.get('topic') || searchParams.get('topic') === 'all',
+                        })}
+                    >
+                        All topics
+                    </div>
+                    {topics?.map((topic) => (
+                        <div
                             key={topic._id}
-                            href={'/?topic=413'}
-                            style={{
-                                backgroundColor: colorizeCategory({ createdAt: topic.created_at }),
-                            }}
-                            className=" mb-1 mr-1 rounded px-3 py-1 font-semibold text-white"
+                            onClick={() => handleTopicFilter(topic)}
+                            className={clsx('cursor-pointer border-b px-3 py-2 font-semibold', {
+                                'text-primary': searchParams.get('topic') === topic._id,
+                            })}
                         >
-                            {topic.name}
-                        </Link>
-                    ))} */}
-
-                    <div className="border-b px-3 py-2 font-semibold text-primary">All topics</div>
-                    <div className="border-b px-3 py-2 font-semibold">Technology</div>
-                    <div className="border-b px-3 py-2 font-semibold">Discus</div>
-                    <div className="border-b px-3 py-2 font-semibold">Bug</div>
+                            {topic?.name}
+                        </div>
+                    ))}
                 </div>
             </div>
             <div className="mb-5">
