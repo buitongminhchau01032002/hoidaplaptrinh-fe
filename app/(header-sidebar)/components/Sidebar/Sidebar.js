@@ -30,7 +30,7 @@ export default function Sidebar() {
 
         router.push(`${'/'}${query}`);
     }
-    console.log(searchParams);
+    // console.log(searchParams);
     return (
         <div>
             <div className="mb-5">

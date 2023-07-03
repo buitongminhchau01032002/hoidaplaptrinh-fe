@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 export default function Home({ searchParams }) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [topics, setTopics] = useState([]);
     const user = useSelector(userSelector);
     const router = useRouter();
 
@@ -29,35 +30,55 @@ export default function Home({ searchParams }) {
             .finally(() => {
                 setLoading(false);
             });
+
+        fetch(`${API}/topics`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(error);
+                }
+                setTopics(resJson.data);
+            });
     }, []);
 
     function handleTopicFilter(topic) {
         const current = new URLSearchParams(Array.from(searchParams)); // -> has to use this form
-        current.set('topic', topic._id);
+        current.set('topic', topic?._id || 'all');
         const search = current.toString();
         const query = search ? `?${search}` : '';
 
         router.push(`${'/'}${query}`);
     }
+
+    console.log(searchParams);
+
+    function handleSelectTopicChange(topicId) {
+        handleTopicFilter({ _id: topicId });
+    }
     return (
         <div className="pt-5">
             {/* TOP BAR */}
             <div className="flex items-center justify-between rounded-lg bg-white p-3">
-                <div className="flex w-[200px] items-center justify-between rounded border px-3 py-1">
-                    <span>All topics</span>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        className="h-5 w-5"
+                <select
+                    onChange={(e) => handleSelectTopicChange(e.target.value)}
+                    className="w-[200px] cursor-pointer rounded border px-3 py-1"
+                >
+                    <option
+                        value="all"
+                        selected={!searchParams?.topic || searchParams.topic === 'all'}
                     >
-                        <path
-                            fillRule="evenodd"
-                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-                </div>
+                        All topic
+                    </option>
+                    {topics?.map((topic) => (
+                        <option
+                            key={topic._id}
+                            value={topic._id}
+                            selected={searchParams?.topic === topic._id}
+                        >
+                            {topic.name}
+                        </option>
+                    ))}
+                </select>
                 <div className="flex w-[200px] items-center justify-between rounded border px-3 py-1">
                     <span>Latest</span>
                     <svg
