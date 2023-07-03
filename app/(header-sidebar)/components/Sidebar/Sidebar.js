@@ -97,7 +97,7 @@ export default function Sidebar() {
                 <p className="text-xl font-semibold">Trending</p>
                 <div className="mt-3 space-y-3">
                     {trendingPosts?.map((post) => (
-                        <div className="rounded-lg bg-white p-3">
+                        <div key={post._id} className="rounded-lg bg-white p-3">
                             <div className="flex items-center">
                                 <Link
                                     href={'profile/' + post?.author?._id}

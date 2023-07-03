@@ -11,49 +11,118 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import striptags from 'striptags';
 import { useRouter } from 'next/navigation';
 
+const SORT_TYPE = [
+    {
+        value: 'latest',
+        name: 'Latest',
+    },
+    {
+        value: 'most-comment',
+        name: 'Most comment',
+    },
+    {
+        value: 'most-score',
+        name: 'Most score',
+    },
+];
+
 export default function Home({ searchParams }) {
     const [posts, setPosts] = useState([]);
-    const [filteredPosts, setFilteredPosts] = useState([]);
+    const [resultPosts, setResultPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [topics, setTopics] = useState([]);
     const user = useSelector(userSelector);
     const router = useRouter();
     useEffect(() => {
+        fetch(`${API}/topics`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                setTopics(resJson.data);
+            });
+        getPosts();
+    }, []);
+
+    function getPosts() {
         fetch(`${API}/posts`)
             .then((res) => res.json())
             .then((resJson) => {
                 if (resJson.error_key) {
-                    console.log(error);
+                    console.log(resJson);
+                    return;
                 }
                 setPosts(resJson.data);
             })
             .finally(() => {
                 setLoading(false);
             });
-        fetch(`${API}/topics`)
-            .then((res) => res.json())
-            .then((resJson) => {
-                if (resJson.error_key) {
-                    console.log(error);
-                }
-                setTopics(resJson.data);
-            });
-    }, []);
+    }
 
     useEffect(() => {
         let topicId = !searchParams?.topic ? 'all' : searchParams.topic;
-        setFilteredPosts(
-            posts.filter((post) => {
-                if (topicId === 'all') {
-                    return true;
-                }
-                return post.topic?._id === topicId;
-            })
+        let sortType = !searchParams?.sort ? 'latest' : searchParams.sort;
+        setResultPosts(
+            posts
+                .filter((post) => {
+                    if (topicId === 'all') {
+                        return true;
+                    }
+                    return post.topic?._id === topicId;
+                })
+                .sort((a, b) => {
+                    if (sortType === 'latest') {
+                        return a.created_at - b.created_at;
+                    }
+                    if (sortType === 'most-comment') {
+                        return b.comment_count - a.comment_count;
+                    }
+                    if (sortType === 'most-score') {
+                        return b.score - a.score;
+                    }
+                })
         );
-    }, [posts, searchParams?.topic]);
+    }, [posts, searchParams?.topic, searchParams?.sort]);
+
+    function handleDownVote(post) {
+        fetch(`${API}/posts/${post._id}/down-vote`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + user.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                getPosts();
+            });
+    }
+    function handleUpVote(post) {
+        fetch(`${API}/posts/${post._id}/up-vote`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + user.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                getPosts();
+            });
+    }
 
     function handleTopicFilter(topic) {
-        const current = new URLSearchParams(Array.from(searchParams)); // -> has to use this form
+        const current = new URLSearchParams(Array.from(searchParams));
         current.set('topic', topic?._id || 'all');
         const search = current.toString();
         const query = search ? `?${search}` : '';
@@ -61,7 +130,16 @@ export default function Home({ searchParams }) {
         router.push(`${'/'}${query}`);
     }
 
-    console.log(searchParams);
+    function handleSort(type) {
+        const current = new URLSearchParams(Array.from(searchParams));
+        current.set('sort', type || 'latest');
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+
+        router.push(`${'/'}${query}`);
+    }
+
+    // console.log(searchParams);
 
     function handleSelectTopicChange(topicId) {
         handleTopicFilter({ _id: topicId });
@@ -73,38 +151,26 @@ export default function Home({ searchParams }) {
                 <select
                     onChange={(e) => handleSelectTopicChange(e.target.value)}
                     className="w-[200px] cursor-pointer rounded border px-3 py-1"
+                    value={searchParams?.topic || 'all'}
                 >
-                    <option
-                        value="all"
-                        selected={!searchParams?.topic || searchParams.topic === 'all'}
-                    >
-                        All topic
-                    </option>
+                    <option value="all">All topic</option>
                     {topics?.map((topic) => (
-                        <option
-                            key={topic._id}
-                            value={topic._id}
-                            selected={searchParams?.topic === topic._id}
-                        >
+                        <option key={topic._id} value={topic._id}>
                             {topic.name}
                         </option>
                     ))}
                 </select>
-                <div className="flex w-[200px] items-center justify-between rounded border px-3 py-1">
-                    <span>Latest</span>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        className="h-5 w-5"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-                </div>
+                <select
+                    onChange={(e) => handleSort(e.target.value)}
+                    className="w-[200px] cursor-pointer rounded border px-3 py-1"
+                    value={searchParams?.sort || 'latest'}
+                >
+                    {SORT_TYPE.map((sortType) => (
+                        <option key={sortType.value} value={sortType.value}>
+                            {sortType.name}
+                        </option>
+                    ))}
+                </select>
             </div>
             <div className="mt-4 space-y-4">
                 {loading && (
@@ -127,12 +193,17 @@ export default function Home({ searchParams }) {
                         </svg>
                     </div>
                 )}
-                {filteredPosts?.map((post) => (
+                {resultPosts?.map((post) => (
                     <div key={post._id} className="flex rounded-lg bg-white">
                         {/* LEFT */}
                         <div className="flex h-full w-16 flex-col items-center p-3">
                             {/* SCORE */}
-                            <VoteControl upVotes={post.up_votes} downVotes={post.down_votes} />
+                            <VoteControl
+                                upVotes={post.up_votes}
+                                downVotes={post.down_votes}
+                                onDown={() => handleDownVote(post)}
+                                onUp={() => handleUpVote(post)}
+                            />
 
                             {/* BOOKMARK */}
                             <button className="mt-3 text-gray-600">

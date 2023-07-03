@@ -5,32 +5,32 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userSelector } from '~/redux/selectors';
 
-export default function VoteControl({ upVotes, downVotes }) {
+export default function VoteControl({ upVotes, downVotes, onDown, onUp }) {
     const user = useSelector(userSelector);
     const [_upVotes, setUpVotes] = useState(upVotes || []);
     const [_downVotes, setDownVotes] = useState(downVotes || []);
     const score = _upVotes.length - _downVotes.length;
-    const canUp = user?._id && !_upVotes.includes(user._id);
-    const canDown = user?._id && !_downVotes.includes(user._id);
 
     function handleUp() {
-        if (!canUp) {
+        onDown && onUp();
+        if (_upVotes.includes(user._id)) {
+            setUpVotes(_upVotes.filter((v) => v !== user._id));
             return;
         }
+        setUpVotes([..._upVotes, user._id]);
         if (_downVotes.includes(user._id)) {
-            setDownVotes(_downVotes.filter((id) => id !== user._id));
-        } else {
-            setUpVotes([..._upVotes, user._id]);
+            setDownVotes(_downVotes.filter((v) => v !== user._id));
         }
     }
     function handleDown() {
-        if (!canDown) {
+        onUp && onDown();
+        if (_downVotes.includes(user._id)) {
+            setDownVotes(_downVotes.filter((v) => v !== user._id));
             return;
         }
+        setDownVotes([..._downVotes, user._id]);
         if (_upVotes.includes(user._id)) {
-            setUpVotes(_upVotes.filter((id) => id !== user._id));
-        } else {
-            setDownVotes([..._downVotes, user._id]);
+            setUpVotes(_upVotes.filter((v) => v !== user._id));
         }
     }
 
@@ -39,7 +39,6 @@ export default function VoteControl({ upVotes, downVotes }) {
             <button
                 onClick={handleUp}
                 className={clsx('-rotate-90 text-gray-600', {
-                    'cursor-default': !canUp,
                     '!text-primary': user?._id && _upVotes.includes(user._id),
                 })}
             >
@@ -58,7 +57,6 @@ export default function VoteControl({ upVotes, downVotes }) {
             <button
                 onClick={handleDown}
                 className={clsx('rotate-90 text-gray-600', {
-                    'cursor-default': !canDown,
                     '!text-primary': user?._id && _downVotes.includes(user._id),
                 })}
             >
