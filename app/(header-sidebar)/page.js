@@ -222,7 +222,7 @@ export default function Home({ searchParams }) {
                                     />
                                 </svg>
                             </button>
-                            {user._id === post?.author._id && (
+                            {user?._id === post?.author._id && (
                                 <>
                                     <button className="mt-3 text-gray-600">
                                         <svg

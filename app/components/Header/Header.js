@@ -100,16 +100,15 @@ export default function Header() {
                                         </div>
                                     </Link>
 
-                                    {
-                                        <>
-                                            <Link
-                                                href="/manage-member"
-                                                className="flex justify-center rounded-md bg-gray-100 py-2 text-sm font-semibold hover:bg-gray-200"
-                                            >
-                                                Manage
-                                            </Link>
-                                        </>
-                                    }
+                                    {(user?.role === 'Administrator' ||
+                                        user?.role === 'Moderator') && (
+                                        <Link
+                                            href="/manage-member"
+                                            className="flex justify-center rounded-md bg-gray-100 py-2 text-sm font-semibold hover:bg-gray-200"
+                                        >
+                                            Manage
+                                        </Link>
+                                    )}
 
                                     <button
                                         onClick={() => dispatch(userActions.logout())}
