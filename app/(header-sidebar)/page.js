@@ -13,11 +13,11 @@ import { useRouter } from 'next/navigation';
 
 export default function Home({ searchParams }) {
     const [posts, setPosts] = useState([]);
+    const [filteredPosts, setFilteredPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [topics, setTopics] = useState([]);
     const user = useSelector(userSelector);
     const router = useRouter();
-
     useEffect(() => {
         fetch(`${API}/posts`)
             .then((res) => res.json())
@@ -30,7 +30,6 @@ export default function Home({ searchParams }) {
             .finally(() => {
                 setLoading(false);
             });
-
         fetch(`${API}/topics`)
             .then((res) => res.json())
             .then((resJson) => {
@@ -40,6 +39,18 @@ export default function Home({ searchParams }) {
                 setTopics(resJson.data);
             });
     }, []);
+
+    useEffect(() => {
+        let topicId = !searchParams?.topic ? 'all' : searchParams.topic;
+        setFilteredPosts(
+            posts.filter((post) => {
+                if (topicId === 'all') {
+                    return true;
+                }
+                return post.topic?._id === topicId;
+            })
+        );
+    }, [posts, searchParams?.topic]);
 
     function handleTopicFilter(topic) {
         const current = new URLSearchParams(Array.from(searchParams)); // -> has to use this form
@@ -116,7 +127,7 @@ export default function Home({ searchParams }) {
                         </svg>
                     </div>
                 )}
-                {posts?.map((post) => (
+                {filteredPosts?.map((post) => (
                     <div key={post._id} className="flex rounded-lg bg-white">
                         {/* LEFT */}
                         <div className="flex h-full w-16 flex-col items-center p-3">
