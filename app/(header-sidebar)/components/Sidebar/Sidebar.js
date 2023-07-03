@@ -4,12 +4,15 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import LinesEllipsis from 'react-lines-ellipsis';
 import { toast } from 'react-toastify';
+import striptags from 'striptags';
 import { API } from '~/constants';
 import colorizeCategory from '~/utils/colorizeCategory';
 
 export default function Sidebar() {
     const [topics, setTopics] = useState();
+    const [trendingPosts, setTrendingPosts] = useState([]);
     const router = useRouter();
     const searchParams = useSearchParams();
     useEffect(() => {
@@ -20,6 +23,14 @@ export default function Sidebar() {
                     return;
                 }
                 setTopics(resJson.data);
+            });
+        fetch(`${API}/posts/trending`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    return;
+                }
+                setTrendingPosts(resJson.data);
             });
     }, []);
     function handleTopicFilter(topic) {
@@ -85,73 +96,62 @@ export default function Sidebar() {
             <div className="mb-5">
                 <p className="text-xl font-semibold">Trending</p>
                 <div className="mt-3 space-y-3">
-                    <div className="rounded-lg bg-white p-3">
-                        <div className="flex items-center">
+                    {trendingPosts?.map((post) => (
+                        <div className="rounded-lg bg-white p-3">
                             <div className="flex items-center">
-                                <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
-                                    <img
-                                        className="h-full w-full object-cover"
-                                        src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1143&q=80"
+                                <Link
+                                    href={'profile/' + post?.author?._id}
+                                    className="flex items-center"
+                                >
+                                    <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
+                                        <img
+                                            className="h-full w-full object-cover"
+                                            src={post?.author?.avatar}
+                                        />
+                                    </div>
+                                    <p className="ml-2 text-sm font-bold text-gray-700">
+                                        {post?.author?.first_name + ' ' + post?.author?.last_name}
+                                    </p>
+                                </Link>
+                                <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
+                                    {post?.author?.role}
+                                </div>
+                            </div>
+                            <Link href={'/' + post._id}>
+                                <div className="py-1 font-bold">
+                                    <LinesEllipsis
+                                        text={post?.title}
+                                        maxLine="1"
+                                        ellipsis="..."
+                                        trimRight
+                                        basedOn="letters"
                                     />
                                 </div>
-                                <p className="ml-2 text-sm font-bold text-gray-700">Minh Chau</p>
-                            </div>
-                            <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                Administrator
-                            </div>
-                        </div>
-                        <div className="py-1 font-bold">Làm sao để fomat code trong VS Code</div>
-                        <div className="text-lgray-700 text-sm">
-                            Chào mọi người! Hiện tài mình đang gặp vấn đề là không thể format code
-                            trong VS code được. Một...
-                        </div>
-                    </div>
-                    <div className="rounded-lg bg-white p-3">
-                        <div className="flex items-center">
-                            <div className="flex items-center">
-                                <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
-                                    <img
-                                        className="h-full w-full object-cover"
-                                        src="https://res.cloudinary.com/psncloud/image/upload/v1684654840/297441000.png"
+                                <div className="text-lgray-700 text-sm">
+                                    <LinesEllipsis
+                                        text={striptags(post?.content)}
+                                        maxLine="2"
+                                        ellipsis="..."
+                                        trimRight
+                                        basedOn="letters"
                                     />
                                 </div>
-                                <p className="ml-2 text-sm font-bold text-gray-700">An Nguyen</p>
-                            </div>
-                            <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                Member
-                            </div>
-                        </div>
-                        <div className="py-1 font-bold">
-                            Tài liệu học Design Pattern ở đâu là đầy đủ nhất?
-                        </div>
-                        <div className="text-lgray-700 text-sm">
-                            Mọi người cho em hỏi là một ứng dụng quản lý cần những Design Pattern
-                            nào?
-                        </div>
-                    </div>
-                    <div className="rounded-lg bg-white p-3">
-                        <div className="flex items-center">
-                            <div className="flex items-center">
-                                <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
-                                    <img
-                                        className="h-full w-full object-cover"
-                                        src="http://res.cloudinary.com/psncloud/image/upload/v1684641422/105511200.png"
-                                    />
+                            </Link>
+                            <div className="mt-3 flex items-center">
+                                <button
+                                    onClick={() => handleTopicFilter(post?.topic)}
+                                    className="rounded bg-primary px-2 py-0.5 text-sm font-medium text-white"
+                                >
+                                    {post?.topic?.name}
+                                </button>
+                                <div className="ml-2 flex space-x-2 text-sm text-gray-600">
+                                    {post?.tags?.map((tag) => (
+                                        <div key={tag._id}>• {tag?.name}</div>
+                                    ))}
                                 </div>
-                                <p className="ml-2 text-sm font-bold text-gray-700">Tran Tuan</p>
-                            </div>
-                            <div className="ml-3 rounded border bg-gray-100 px-2 text-sm">
-                                Member
                             </div>
                         </div>
-                        <div className="py-1 font-bold">
-                            Cách kiểm tra 1 máy tính đã từng kết nối internet?
-                        </div>
-                        <div className="text-lgray-700 text-sm">
-                            Công ty mình không cho phép sử dụng máy tính tại công ty để truy cập
-                            internet và sắp tới mình được sếp giao nhiệm vụ
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </div>
