@@ -10,8 +10,8 @@ import { useSelector } from 'react-redux';
 import { userSelector } from '~/redux/selectors';
 import { useRouter } from 'next/navigation';
 import { API } from '~/constants';
-import TopicInput from '../components/TopicInput';
-import TagsInput from '../components/TagsInput';
+import TopicInput from '../../components/TopicInput';
+import TagsInput from '../../components/TagsInput';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -19,23 +19,44 @@ const validationSchema = Yup.object({
     topic_id: Yup.string().required('Topic is required'),
 });
 
-export default function CreatePostPage() {
+export default function CreatePostPage({ params }) {
     const [loading, setLoading] = useState(false);
+    const [post, setPost] = useState(null);
     const user = useSelector(userSelector);
     const showSuccessNoti = () => toast.success('Create post successfully!');
     const router = useRouter();
+
+    useEffect(() => {
+        getPost();
+    }, []);
+    function getPost() {
+        fetch(`${API}/posts/` + params.postId)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    return;
+                }
+                setPost(resJson.data);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
+
     const formik = useFormik({
         initialValues: {
-            title: '',
-            content: '',
-            topic_id: '',
-            tag_names: [],
-            images: [],
+            title: post?.title || '',
+            content: post?.content || '',
+            topic_id: post?.topic?._id || '',
+            tag_names: post?.tags?.map((t) => t.name) || [],
+            images: post?.image || [],
         },
         enableReinitialize: true,
         validationSchema,
         onSubmit: handleCreatePost,
     });
+
+    console.log(post?.images);
 
     async function handleCreatePost(values) {
         setLoading(true);
@@ -58,7 +79,7 @@ export default function CreatePostPage() {
                 if (uploadResult.error_key) {
                     throw uploadResult.message;
                 }
-                linkImages = uploadResult.data;
+                linkImages = uploadResult.urls;
             }
 
             const data = await fetch(`${API}/posts`, {
@@ -95,7 +116,7 @@ export default function CreatePostPage() {
     return (
         <div className="mt-5">
             <div className="mx-auto max-w-[720px] rounded-lg bg-white p-4">
-                <p className="py-7 text-center text-2xl font-medium">CREATE POST</p>
+                <p className="py-7 text-center text-2xl font-medium">EDIT POST</p>
                 <form onSubmit={formik.handleSubmit}>
                     <div className="mb-4">
                         <label className="font-semibold">Title</label>
@@ -170,7 +191,11 @@ export default function CreatePostPage() {
                     </div>
 
                     <div className="mb-4">
-                        <ImageInput formik={formik} formikField="images" />
+                        <ImageInput
+                            formik={formik}
+                            formikField="images"
+                            initImage={formik.initialValues?.images}
+                        />
                     </div>
                     <div className="flex items-center justify-between">
                         <button
@@ -182,7 +207,7 @@ export default function CreatePostPage() {
                                 }
                             )}
                         >
-                            <span className="pr-1">
+                            {/* <span className="pr-1">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -195,8 +220,8 @@ export default function CreatePostPage() {
                                         clipRule="evenodd"
                                     />
                                 </svg>
-                            </span>
-                            Create post
+                            </span> */}
+                            Update post
                         </button>
 
                         {loading && (
@@ -215,7 +240,7 @@ export default function CreatePostPage() {
                                         d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
                                     />
                                 </svg>
-                                <div className="ml-1">Creating post ...</div>
+                                <div className="ml-1">Updating post ...</div>
                             </div>
                         )}
                     </div>

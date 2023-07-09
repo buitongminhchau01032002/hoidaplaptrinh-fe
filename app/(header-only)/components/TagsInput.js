@@ -9,19 +9,21 @@ export default function TagsInput({ formik }) {
         if (!inputValue) {
             return;
         }
-        if (formik.values.tags?.includes(inputValue)) {
+        if (formik.values.tag_names?.includes(inputValue)) {
             return;
         }
-        formik.setFieldValue('tags', [...formik.values.tags, inputValue]);
+        formik.setFieldValue('tag_names', [...formik.values.tag_names, inputValue]);
         setInputValue('');
     }
 
     function handleRemoveTag(tag) {
         formik.setFieldValue(
-            'tags',
-            formik.values.tags.filter((t) => t !== tag)
+            'tag_names',
+            formik.values.tag_names.filter((t) => t !== tag)
         );
     }
+
+    console.log('tags: ', formik.values?.tag_names);
 
     return (
         <div>
@@ -29,7 +31,7 @@ export default function TagsInput({ formik }) {
                 <input
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    name="tags"
+                    name="tag_names"
                     type="text"
                     className="text-input"
                     placeholder="Add tags ..."
@@ -48,7 +50,7 @@ export default function TagsInput({ formik }) {
                 </button>
             </div>
             <div className="flex">
-                {formik.values.tags?.map((tag) => (
+                {formik.values.tag_names?.map((tag) => (
                     <button
                         key={tag}
                         className="mr-1 mt-1 rounded border bg-white px-2 py-1 text-sm"
@@ -61,10 +63,10 @@ export default function TagsInput({ formik }) {
             </div>
             <div
                 className={clsx('invisible text-sm', {
-                    // '!visible text-red-500': formik.errors.tags && formik.touched.tags,
+                    // '!visible text-red-500': formik.errors.tag_names && formik.touched.tag_names,
                 })}
             >
-                {formik.errors.tags || 'No error message'}
+                {formik.errors.tag_names || 'No error message'}
             </div>
         </div>
     );
