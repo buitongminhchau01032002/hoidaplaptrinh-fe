@@ -1,3 +1,4 @@
+'use client';
 import { useRef, useImperativeHandle, forwardRef, memo } from 'react';
 import JoditEditor from 'jodit-react';
 
