@@ -79,6 +79,6 @@
         @apply list-disc px-5;
     }
     .text-editor pre {
-        @apply bg-slate-200;
+        @apply rounded bg-gray-100 p-2;
     }
 }

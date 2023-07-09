@@ -1,6 +1,7 @@
 'use client';
 import { useRef, useImperativeHandle, forwardRef, memo } from 'react';
-import JoditEditor from 'jodit-react';
+// import JoditEditor from 'jodit-react';
+import JoditClient from './JoiditClient';
 
 const BUTTONS = ['paragraph', 'bold', 'italic', 'underline', 'link', 'ul', 'eraser'];
 
@@ -17,7 +18,7 @@ const PostContentEditor = ({ setFormik, initValue, setTouch }) => {
     }
 
     return (
-        <JoditEditor
+        <JoditClient
             ref={editor}
             value={initValue}
             key="contentEditor"

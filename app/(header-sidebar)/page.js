@@ -145,6 +145,8 @@ export default function Home() {
     function handleSelectTopicChange(topicId) {
         handleTopicFilter({ _id: topicId });
     }
+
+    const objectQuery = Object.fromEntries(searchParams.entries());
     return (
         <div className="pt-5">
             {/* TOP BAR */}
@@ -152,7 +154,7 @@ export default function Home() {
                 <select
                     onChange={(e) => handleSelectTopicChange(e.target.value)}
                     className="w-[200px] cursor-pointer rounded border px-3 py-1"
-                    value={searchParams?.topic || 'all'}
+                    value={objectQuery?.topic || 'all'}
                 >
                     <option value="all">All topic</option>
                     {topics?.map((topic) => (
@@ -164,7 +166,7 @@ export default function Home() {
                 <select
                     onChange={(e) => handleSort(e.target.value)}
                     className="w-[200px] cursor-pointer rounded border px-3 py-1"
-                    value={searchParams?.sort || 'latest'}
+                    value={objectQuery?.sort || 'latest'}
                 >
                     {SORT_TYPE.map((sortType) => (
                         <option key={sortType.value} value={sortType.value}>

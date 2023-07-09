@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import clsx from 'clsx';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import PostContentEditor from '~/app/components/PostContentEditor';
 import ImageInput from '~/app/components/ImageInput';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import { userSelector } from '~/redux/selectors';
 import { useRouter } from 'next/navigation';
 import { API } from '~/constants';
 import TopicInput from '../components/TopicInput';
+import TagsInput from './components/TagsInput';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -28,8 +29,10 @@ export default function CreatePostPage() {
             title: '',
             content: '',
             topic_id: '',
+            tags: [],
             images: [],
         },
+        enableReinitialize: true,
         validationSchema,
         onSubmit: handleCreatePost,
     });
@@ -48,6 +51,9 @@ export default function CreatePostPage() {
                 const uploadResult = await fetch(`${API}/upload/images/multiple`, {
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        Authorization: 'Bearer ' + user?.token,
+                    },
                 }).then((res) => res.json());
                 if (uploadResult.error_key) {
                     throw uploadResult.message;
@@ -67,7 +73,8 @@ export default function CreatePostPage() {
             if (data.error_key) {
                 throw data.message;
             }
-            router.push('/');
+            router.push('/profile/' + user?._id);
+            // formik.resetForm();
             showSuccessNoti();
         } catch (error) {
             console.log(error);
@@ -84,6 +91,7 @@ export default function CreatePostPage() {
     const setTouchContent = useCallback(() => {
         formik.setFieldTouched('content', true);
     }, []);
+
     return (
         <div className="mt-5">
             <div className="mx-auto max-w-[720px] rounded-lg bg-white p-4">
@@ -158,30 +166,7 @@ export default function CreatePostPage() {
 
                     <div className="mb-4">
                         <label className="font-semibold">Tag</label>
-                        <input
-                            name="title"
-                            type="text"
-                            className={clsx('text-input mt-1', {
-                                invalid: formik.errors.title && formik.touched.title,
-                            })}
-                            placeholder="Find and add tags..."
-                        />
-                        <div className="flex">
-                            <div className="mr-1 mt-1 rounded border bg-white px-2 py-1 text-sm">
-                                Bug
-                            </div>
-                            <div className="mr-1 mt-1 rounded border bg-white px-2 py-1 text-sm">
-                                Javascript
-                            </div>
-                        </div>
-                        <div
-                            className={clsx('invisible text-sm', {
-                                '!visible text-red-500':
-                                    formik.errors.title && formik.touched.title,
-                            })}
-                        >
-                            {formik.errors.title || 'No error message'}
-                        </div>
+                        <TagsInput formik={formik} />
                     </div>
 
                     <div className="mb-4">
@@ -230,7 +215,7 @@ export default function CreatePostPage() {
                                         d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
                                     />
                                 </svg>
-                                <div className="ml-1">Đang tạo bài đăng</div>
+                                <div className="ml-1">Creating post ...</div>
                             </div>
                         )}
                     </div>
