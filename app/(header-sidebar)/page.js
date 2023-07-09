@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { userSelector } from '~/redux/selectors';
 import LinesEllipsis from 'react-lines-ellipsis';
 import striptags from 'striptags';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const SORT_TYPE = [
     {
@@ -26,13 +26,14 @@ const SORT_TYPE = [
     },
 ];
 
-export default function Home({ searchParams }) {
+export default function Home() {
     const [posts, setPosts] = useState([]);
     const [resultPosts, setResultPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [topics, setTopics] = useState([]);
     const user = useSelector(userSelector);
     const router = useRouter();
+    const searchParams = useSearchParams();
     useEffect(() => {
         fetch(`${API}/topics`)
             .then((res) => res.json())
@@ -122,7 +123,7 @@ export default function Home({ searchParams }) {
     }
 
     function handleTopicFilter(topic) {
-        const current = new URLSearchParams(Array.from(searchParams));
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
         current.set('topic', topic?._id || 'all');
         const search = current.toString();
         const query = search ? `?${search}` : '';
@@ -131,7 +132,7 @@ export default function Home({ searchParams }) {
     }
 
     function handleSort(type) {
-        const current = new URLSearchParams(Array.from(searchParams));
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
         current.set('sort', type || 'latest');
         const search = current.toString();
         const query = search ? `?${search}` : '';

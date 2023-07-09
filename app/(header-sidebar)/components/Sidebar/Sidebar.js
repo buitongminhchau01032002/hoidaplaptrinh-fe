@@ -34,7 +34,7 @@ export default function Sidebar() {
             });
     }, []);
     function handleTopicFilter(topic) {
-        const current = new URLSearchParams(Array.from(searchParams)); // -> has to use this form
+        const current = new URLSearchParams(Array.from(searchParams.entries())); // -> has to use this form
         current.set('topic', topic?._id || 'all');
         const search = current.toString();
         const query = search ? `?${search}` : '';
