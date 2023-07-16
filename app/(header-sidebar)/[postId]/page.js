@@ -49,9 +49,12 @@ export default function DetailPostPage({ params }) {
         if (!post) {
             return;
         }
+        if (!post.comments) {
+            return [];
+        }
         console.log('re get comments by post');
         let _comments = post.comments;
-        const replyPromises = _comments.map(async (comment) => {
+        const replyPromises = _comments?.map(async (comment) => {
             try {
                 const resJson = await fetch(`${API}/comments/${comment._id}/replies`).then((res) =>
                     res.json()
