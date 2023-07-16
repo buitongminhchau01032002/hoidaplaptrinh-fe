@@ -203,12 +203,14 @@ export default function DetailPostPage({ params }) {
                     {user?.role === 'Administrator' && (
                         <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2">
                             <div className=""></div>
-                            <Link
-                                href="/login"
-                                className="mr-[85px] flex h-9 min-w-[120px] items-center justify-center rounded-md bg-red-500 px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
-                            >
-                                Block post
-                            </Link>
+                            {!post?.is_blocked && (
+                                <Link
+                                    href="/login"
+                                    className="mr-[85px] flex h-9 min-w-[120px] items-center justify-center rounded-md bg-red-500 px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
+                                >
+                                    Block post
+                                </Link>
+                            )}
                         </div>
                     )}
 
@@ -313,7 +315,7 @@ export default function DetailPostPage({ params }) {
 
                             {/* Main */}
                             <div className="mt-4 block">
-                                <h2 className="text-xl font-bold">{post?.title}</h2>
+                                <h2 className="text-2xl font-bold">{post?.title}</h2>
                                 <div className="text-editor mt-2 text-gray-800">
                                     <div dangerouslySetInnerHTML={{ __html: post?.content }}></div>
                                     <div className="mt-2 space-y-2">
@@ -403,10 +405,12 @@ export default function DetailPostPage({ params }) {
             )}
 
             {/* COMMENT */}
-            <p className="mt-5 px-3 text-lg font-bold">Comments</p>
+            <p className="mt-5 px-3 text-lg font-bold">{`Comments (${post?.comment_count})`}</p>
             <div className="px-3 py-2">
                 {!user ? (
-                    <div>You must login to write commnents</div>
+                    <div>You must login to write comments</div>
+                ) : post?.is_blocked ? (
+                    <div>This post is blocked comment</div>
                 ) : (
                     <div className="border-b pb-3">
                         <div
