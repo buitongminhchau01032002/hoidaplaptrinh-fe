@@ -1,32 +1,92 @@
-'user client';
+'use client';
 
+import clsx from 'clsx';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import VoteControl from '~/app/components/VoteControl';
+import { API } from '~/constants';
+import { userSelector } from '~/redux/selectors';
 
 export default function ManagePostPage() {
+    const user = useSelector(userSelector);
+    const [topics, setTopics] = useState([]);
+    const [currentTopic, setCurrentTopic] = useState([]);
+    const [typePost, setTypePost] = useState('pending');
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        fetchTopic();
+    }, []);
+
+    function fetchTopic() {
+        fetch(`${API}/topics?userId=${user?._id}`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                setTopics(resJson.data);
+            });
+    }
+
+    useEffect(() => {
+        if (topics.length > 0) {
+            setCurrentTopic(topics[0]._id);
+        } else {
+            setCurrentTopic(null);
+        }
+    }, [topics]);
+
+    useEffect(() => {
+        if (!currentTopic) {
+            return;
+        }
+    }, [currentTopic, typePost]);
+
+    function fetchPost() {}
+
     return (
         <div className="">
             {/* TOP BAR */}
             <div className="flex items-center justify-between rounded-lg bg-white p-3">
-                <div className="flex w-[200px] items-center justify-between rounded border px-3 py-1">
-                    <span>All topics</span>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        className="h-5 w-5"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-                </div>
+                <select
+                    onChange={(e) => setCurrentTopic(e.target.value)}
+                    className="w-[200px] cursor-pointer rounded border px-3 py-1"
+                >
+                    {topics?.map((topic) => (
+                        <option key={topic._id} value={topic._id}>
+                            {topic.name}
+                        </option>
+                    ))}
+                </select>
+
                 <div className="flex font-medium">
-                    <div className="rounded bg-primary px-3 py-1.5 text-white">Pedding</div>
-                    <div className="rounded px-3 py-1.5 text-primary">Denied</div>
-                    <div className="rounded px-3 py-1.5 text-primary">Blocked</div>
+                    <button
+                        className={clsx('rounded px-3 py-1.5 text-primary', {
+                            '!bg-primary !text-white': typePost === 'pending',
+                        })}
+                        onClick={() => setTypePost('pending')}
+                    >
+                        Pending
+                    </button>
+                    <button
+                        className={clsx('rounded px-3 py-1.5 text-primary', {
+                            '!bg-primary !text-white': typePost === 'denied',
+                        })}
+                        onClick={() => setTypePost('denied')}
+                    >
+                        Denied
+                    </button>
+                    <button
+                        className={clsx('rounded px-3 py-1.5 text-primary', {
+                            '!bg-primary !text-white': typePost === 'blocked',
+                        })}
+                        onClick={() => setTypePost('blocked')}
+                    >
+                        Blocked
+                    </button>
                 </div>
             </div>
             <div className="mt-4 space-y-4">

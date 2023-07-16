@@ -103,7 +103,7 @@ export default function Header() {
                                     {(user?.role === 'Administrator' ||
                                         user?.role === 'Moderator') && (
                                         <Link
-                                            href="/manage-member"
+                                            href="/manage"
                                             className="flex justify-center rounded-md bg-gray-100 py-2 text-sm font-semibold hover:bg-gray-200"
                                         >
                                             Manage
