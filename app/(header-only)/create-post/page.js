@@ -23,6 +23,7 @@ export default function CreatePostPage() {
     const [loading, setLoading] = useState(false);
     const user = useSelector(userSelector);
     const showSuccessNoti = () => toast.success('Create post successfully!');
+    const [random, setRandom] = useState(Math.random());
     const router = useRouter();
     const formik = useFormik({
         initialValues: {
@@ -73,8 +74,9 @@ export default function CreatePostPage() {
             if (data.error_key) {
                 throw data.message;
             }
-            router.push('/profile/' + user?._id);
-            // formik.resetForm();
+            // router.push('/profile/' + user?._id);
+            formik.resetForm();
+            setRandom(Math.random());
             showSuccessNoti();
         } catch (error) {
             console.log(error);
@@ -131,6 +133,7 @@ export default function CreatePostPage() {
                                 setFormik={handleChangeContent}
                                 initValue={formik.initialValues.content}
                                 setTouch={setTouchContent}
+                                triggerReset={random}
                             />
                         </div>
                         <div

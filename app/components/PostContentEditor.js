@@ -5,7 +5,7 @@ import JoditClient from './JoiditClient';
 
 const BUTTONS = ['paragraph', 'bold', 'italic', 'underline', 'link', 'ul', 'eraser'];
 
-const PostContentEditor = ({ setFormik, initValue, setTouch }) => {
+const PostContentEditor = ({ setFormik, initValue, setTouch, triggerReset }) => {
     const editor = useRef(null);
 
     function handleChange(newContent) {
@@ -17,11 +17,13 @@ const PostContentEditor = ({ setFormik, initValue, setTouch }) => {
         setTouch();
     }
 
+    console.log('initValue', initValue);
+
     return (
         <JoditClient
             ref={editor}
             value={initValue}
-            key="contentEditor"
+            key={triggerReset}
             config={{
                 buttons: BUTTONS,
                 buttonsMD: BUTTONS,
