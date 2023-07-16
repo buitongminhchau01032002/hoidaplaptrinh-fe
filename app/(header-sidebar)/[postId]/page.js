@@ -8,13 +8,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PostContentEditor from '~/app/components/PostContentEditor';
 import VoteControl from '~/app/components/VoteControl';
-import { API } from '~/constants';
+import { API, SOCKET_EVENT } from '~/constants';
 import { userSelector } from '~/redux/selectors';
 import clsx from 'clsx';
 import CommentVoteControl from '~/app/components/CommentVoteControl';
 import { Dialog } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import CommentCard from './components/CommentCard';
+import socket from '~/utils/socket';
 
 const validationSchema = Yup.object({
     content: Yup.string().required('Content is required'),
@@ -37,8 +38,23 @@ export default function DetailPostPage({ params }) {
         onSubmit: handleCreateComment,
     });
 
+    function onCreateComment(value) {
+        console.log(value);
+        setComments((prev) => [...prev, value]);
+    }
+
+    useEffect(() => {
+        socket.on(SOCKET_EVENT.CreateComment, onCreateComment);
+        console.log('run');
+        return () => {
+            socket.emit(SOCKET_EVENT.LeaveRoom, `post-${post?._id}`);
+        };
+    }, []);
+
     useEffect(() => {
         getPost();
+
+        // console.log(socket);
     }, []);
 
     useEffect(() => {
@@ -111,6 +127,7 @@ export default function DetailPostPage({ params }) {
                     return;
                 }
                 setPost(resJson.data);
+                socket.emit(SOCKET_EVENT.JoinRoom, `post-${resJson.data._id}`);
             })
             .finally(() => {
                 setLoading(false);
