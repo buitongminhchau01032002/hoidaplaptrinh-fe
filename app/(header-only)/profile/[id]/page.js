@@ -57,7 +57,9 @@ export default function Profile({ params }) {
                     />
                     <div className="flex flex-col items-center">
                         <div className="">{user?.email}</div>
-                        <div className="font-semibold">{user?.role?.name}</div>
+                        <div className="mt-3 rounded border bg-white px-3 font-semibold">
+                            {user?.role}
+                        </div>
                     </div>
                     {/* <FollowButton
                         user={user}

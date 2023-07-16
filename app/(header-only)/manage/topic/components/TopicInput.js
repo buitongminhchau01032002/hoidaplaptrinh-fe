@@ -9,14 +9,14 @@ import { userSelector } from '~/redux/selectors';
 function TopicInput({ topic, onChange }) {
     const [editing, setEditing] = useState(false);
     const [name, setName] = useState(topic.name);
-    const showUpdateNoti = () => toast.success('Chỉnh sửa thành công!');
-    const showDeleteNoti = () => toast.success('Xoá sửa thành công!');
-    const showErorrNoti = () => toast.error('Có lỗi xảy ra!');
+    const showUpdateNoti = () => toast.success('Update successfully!');
+    const showDeleteNoti = () => toast.success('Delete successfully!');
+    const showErorrNoti = () => toast.error('Something went wrong!');
     const user = useSelector(userSelector);
 
     function updateTopic() {
-        fetch(`${API}/${topic._id}`, {
-            method: 'PUT',
+        fetch(`${API}/topics/${topic._id}`, {
+            method: 'PATCH',
             headers: {
                 Authorization: `Bearer ${user?.token}`,
                 'Content-Type': 'application/json',

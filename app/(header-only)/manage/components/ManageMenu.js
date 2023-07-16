@@ -1,5 +1,10 @@
+'use client';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { userSelector } from '~/redux/selectors';
 
 const ITEM = [
     {
@@ -17,19 +22,44 @@ const ITEM = [
 ];
 
 export default function ManageMenu() {
+    const segment = useSelectedLayoutSegment();
+    const [mounted, setMouted] = useState(false);
+    const user = useSelector(userSelector);
+
+    useEffect(() => {
+        setMouted(true);
+    }, []);
+    console.log(segment);
     return (
-        <div className="bg-white">
-            {ITEM.map((item, index) => (
+        mounted && (
+            <div className="bg-white">
                 <Link
                     className={clsx('block border-b p-3 font-semibold', {
-                        'text-primary': item.link === '/user',
+                        'text-primary': segment === 'post',
                     })}
-                    key={index}
-                    href={'/manage' + item.link}
+                    href="/manage/post"
                 >
-                    {item.name}
+                    Posts
                 </Link>
-            ))}
-        </div>
+                {user?.role === 'Administrator' && (
+                    <Link
+                        className={clsx('block border-b p-3 font-semibold', {
+                            'text-primary': segment === 'topic',
+                        })}
+                        href="/manage/topic"
+                    >
+                        Topics
+                    </Link>
+                )}
+                <Link
+                    className={clsx('block border-b p-3 font-semibold', {
+                        'text-primary': segment === 'user',
+                    })}
+                    href="/manage/user"
+                >
+                    Users
+                </Link>
+            </div>
+        )
     );
 }
