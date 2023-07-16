@@ -154,6 +154,7 @@ export default function Home() {
     }
 
     const objectQuery = Object.fromEntries(searchParams.entries());
+    console.log(posts);
     return (
         <>
             <div className="pt-5">
@@ -292,14 +293,19 @@ export default function Home() {
                                 <div className="mt-4 block">
                                     <Link href={'/' + post._id}>
                                         <h2 className="text-lg font-bold">{post?.title}</h2>
-                                        <div className="mt-2 text-gray-600">
-                                            <LinesEllipsis
-                                                text={striptags(post?.content)}
+                                        <div
+                                            className="mt-2 h-[70px] overflow-y-hidden text-gray-600"
+                                            dangerouslySetInnerHTML={{
+                                                __html: striptags(post?.content, '<br>', '<p>'),
+                                            }}
+                                        >
+                                            {/* <LinesEllipsis
+                                                text={}
                                                 maxLine="3"
                                                 ellipsis="..."
                                                 trimRight
                                                 basedOn="letters"
-                                            />
+                                            /> */}
                                         </div>
                                     </Link>
                                     <div className="mt-3 flex items-center">

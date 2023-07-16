@@ -129,6 +129,30 @@ export default function ManageTopicPage() {
             });
     }
 
+    function handleSetAsModerator(id) {
+        fetch(`${API}/users/${id}/change-role`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${user?.token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ role_type: 1 }),
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    toast.error('Something went wrong!');
+                    return;
+                }
+                toast.success('Set moderator successfully!');
+                fetchUsers();
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error('Something went wrong!');
+            });
+    }
+
     return (
         <div>
             <div className="flex items-center justify-between rounded-lg bg-white p-3">
@@ -236,7 +260,7 @@ export default function ManageTopicPage() {
                                     {_user?.role === 'Member' && (
                                         <button
                                             className="flex h-9 w-full items-center justify-center rounded-md bg-orange-500 px-5 text-sm font-medium text-white transition hover:bg-orange-600"
-                                            onClick={() => handleSetAsModerator(_user?.id)}
+                                            onClick={() => handleSetAsModerator(_user?._id)}
                                         >
                                             Set as Moderator
                                         </button>
@@ -244,7 +268,7 @@ export default function ManageTopicPage() {
                                     {_user?.role === 'Moderator' && (
                                         <button
                                             className="flex h-9 w-full items-center justify-center rounded-md bg-slate-500 px-5 text-sm font-medium text-white transition hover:bg-slate-700"
-                                            onClick={() => handleSetAsMember(_user?.id)}
+                                            onClick={() => handleSetAsMember(_user?._id)}
                                         >
                                             Set as Member
                                         </button>
