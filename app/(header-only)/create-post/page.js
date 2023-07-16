@@ -96,7 +96,7 @@ export default function CreatePostPage() {
         <div className="mt-5">
             <div className="mx-auto max-w-[720px] rounded-lg bg-white p-4">
                 <p className="py-7 text-center text-2xl font-medium">CREATE POST</p>
-                <form onSubmit={formik.handleSubmit}>
+                <div>
                     <div className="mb-4">
                         <label className="font-semibold">Title</label>
                         <input
@@ -174,7 +174,7 @@ export default function CreatePostPage() {
                     </div>
                     <div className="flex items-center justify-between">
                         <button
-                            type="submit"
+                            onClick={formik.handleSubmit}
                             className={clsx(
                                 'flex h-9 min-w-[120px] items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark',
                                 {
@@ -219,7 +219,7 @@ export default function CreatePostPage() {
                             </div>
                         )}
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );
