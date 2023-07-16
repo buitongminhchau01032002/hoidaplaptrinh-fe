@@ -116,6 +116,28 @@ export default function ManagePostPage() {
                 toast.error('Something went wrong!');
             });
     }
+    function handleUnblock(postId) {
+        fetch(`${API}/posts/${postId}/unblock`, {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + user?.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    toast.error('Something went wrong!');
+                    return;
+                }
+                toast.success('Unblock successfully!');
+                fetchPost();
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error('Something went wrong!');
+            });
+    }
 
     return (
         <div className="">
@@ -254,6 +276,14 @@ export default function ManagePostPage() {
                                         onClick={() => handleDeny(post._id)}
                                     >
                                         Deny
+                                    </button>
+                                )}
+                                {typePost === 'blocked' && (
+                                    <button
+                                        className="flex h-9 w-full items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
+                                        onClick={() => handleUnblock(post._id)}
+                                    >
+                                        Unblock
                                     </button>
                                 )}
                             </div>
