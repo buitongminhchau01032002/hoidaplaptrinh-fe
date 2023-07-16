@@ -538,8 +538,28 @@ function CommentCard({ post, comment, onChange, onChangePost }) {
     }
 
     function handleDeleteComment() {
-        // TODO: CALL API DELETE
-        console.log('delete comment');
+        fetch(`${API}/comments/${comment._id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + user.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                toast.success('Delete comment successfully!');
+                setOpenDeleteDialog(false);
+            })
+            .catch((err) => {
+                toast.error('Some thing went wrong!');
+            })
+            .finally(() => {
+                onChangePost();
+            });
     }
 
     return (
@@ -737,8 +757,28 @@ function ReplyCard({ post, comment, onChange, onChangePost }) {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
     function handleDeleteComment() {
-        // TODO: CALL API DELETE
-        console.log('delete comment');
+        fetch(`${API}/comments/${comment._id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + user.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                toast.success('Delete comment successfully!');
+                setOpenDeleteDialog(false);
+            })
+            .catch((err) => {
+                toast.error('Some thing went wrong!');
+            })
+            .finally(() => {
+                onChangePost();
+            });
     }
 
     return (
