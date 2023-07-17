@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog } from '@headlessui/react';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -30,16 +31,31 @@ export default function ManageTopicPage() {
     const [typeUser, setTypeUser] = useState('all');
     const [search, setSearch] = useState('');
     const [searchUsers, setSearchUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [topics, setTopics] = useState([]);
 
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
         fetchUsers();
+        fetchTopics();
     }, []);
 
     useEffect(() => {
         fetchUsers();
     }, [typeUser]);
+
+    function fetchTopics() {
+        fetch(`${API}/topics`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                setTopics(resJson.data);
+            });
+    }
 
     function fetchUsers() {
         setLoading(true);
@@ -154,132 +170,286 @@ export default function ManageTopicPage() {
     }
 
     return (
-        <div>
-            <div className="flex items-center justify-between rounded-lg bg-white p-3">
-                <div className="flex items-center space-x-2">
-                    <div className="flex h-9 items-center rounded-md border border-gray-400 bg-white focus-within:!border-primary hover:border-gray-500">
-                        <div className="pl-3 text-gray-600">
+        <>
+            <div>
+                <div className="flex items-center justify-between rounded-lg bg-white p-3">
+                    <div className="flex items-center space-x-2">
+                        <div className="flex h-9 items-center rounded-md border border-gray-400 bg-white focus-within:!border-primary hover:border-gray-500">
+                            <div className="pl-3 text-gray-600">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="h-5 w-5"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                                    />
+                                </svg>
+                            </div>
+
+                            <input
+                                className="h-full flex-1 rounded-md px-2"
+                                placeholder="Search user ... "
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex font-medium">
+                        <button
+                            className={clsx('rounded px-3 py-1.5 text-primary', {
+                                '!bg-primary !text-white': typeUser === 'all',
+                            })}
+                            onClick={() => setTypeUser('all')}
+                        >
+                            All
+                        </button>
+                        <button
+                            className={clsx('rounded px-3 py-1.5 text-primary', {
+                                '!bg-primary !text-white': typeUser === 'moderator',
+                            })}
+                            onClick={() => setTypeUser('moderator')}
+                        >
+                            Moderator
+                        </button>
+                        <button
+                            className={clsx('rounded px-3 py-1.5 text-primary', {
+                                '!bg-primary !text-white': typeUser === 'member',
+                            })}
+                            onClick={() => setTypeUser('member')}
+                        >
+                            Member
+                        </button>
+                    </div>
+                </div>
+
+                <div className="mt-3">
+                    {loading && (
+                        <div className="flex justify-center py-6">
                             <svg
-                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                className="h-10 w-10 animate-spin fill-primary text-gray-200 dark:text-gray-600"
+                                viewBox="0 0 100 101"
                                 fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-5 w-5"
+                                xmlns="http://www.w3.org/2000/svg"
                             >
                                 <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor"
+                                />
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill"
                                 />
                             </svg>
                         </div>
-
-                        <input
-                            className="h-full flex-1 rounded-md px-2"
-                            placeholder="Search user ... "
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className="flex font-medium">
-                    <button
-                        className={clsx('rounded px-3 py-1.5 text-primary', {
-                            '!bg-primary !text-white': typeUser === 'all',
-                        })}
-                        onClick={() => setTypeUser('all')}
-                    >
-                        All
-                    </button>
-                    <button
-                        className={clsx('rounded px-3 py-1.5 text-primary', {
-                            '!bg-primary !text-white': typeUser === 'moderator',
-                        })}
-                        onClick={() => setTypeUser('moderator')}
-                    >
-                        Moderator
-                    </button>
-                    <button
-                        className={clsx('rounded px-3 py-1.5 text-primary', {
-                            '!bg-primary !text-white': typeUser === 'member',
-                        })}
-                        onClick={() => setTypeUser('member')}
-                    >
-                        Member
-                    </button>
-                </div>
-            </div>
-
-            <div className="mt-3">
-                {loading && (
-                    <div className="flex justify-center py-6">
-                        <svg
-                            aria-hidden="true"
-                            className="h-10 w-10 animate-spin fill-primary text-gray-200 dark:text-gray-600"
-                            viewBox="0 0 100 101"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                fill="currentColor"
-                            />
-                            <path
-                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                fill="currentFill"
-                            />
-                        </svg>
-                    </div>
-                )}
-                {!loading &&
-                    searchUsers?.map((_user) =>
-                        _user?.role ? (
-                            <div
-                                key={_user?._id}
-                                className="flex items-center justify-between border-b bg-white p-3"
-                            >
-                                <div className="flex w-full items-center pb-2">
-                                    <div className="h-[80px] w-[80px] overflow-hidden rounded-full">
-                                        <img
-                                            className="h-full w-full object-cover"
-                                            src={_user?.avatar}
-                                        />
-                                    </div>
-                                    <div className="ml-3 space-y-1 overflow-hidden">
-                                        <p className="text-left text-lg font-bold">
-                                            {_user?.first_name + ' ' + _user?.last_name}
-                                        </p>
-                                        <p className="text-left text-gray-600">{_user?.email}</p>
-                                        <div className="inline-block rounded border bg-gray-100 px-3 py-1">
-                                            {_user?.role}
+                    )}
+                    {!loading &&
+                        searchUsers?.map((_user) =>
+                            _user?.role ? (
+                                <div
+                                    key={_user?._id}
+                                    className="flex items-center justify-between border-b bg-white p-3"
+                                >
+                                    <div className="flex w-full items-center pb-2">
+                                        <div className="h-[80px] w-[80px] overflow-hidden rounded-full">
+                                            <img
+                                                className="h-full w-full object-cover"
+                                                src={_user?.avatar}
+                                            />
+                                        </div>
+                                        <div className="ml-3 space-y-1 overflow-hidden">
+                                            <p className="text-left text-lg font-bold">
+                                                {_user?.first_name + ' ' + _user?.last_name}
+                                            </p>
+                                            <p className="text-left text-gray-600">
+                                                {_user?.email}
+                                            </p>
+                                            <div className="inline-block rounded border bg-gray-100 px-3 py-1">
+                                                {_user?.role}
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className="w-[200px] space-y-2">
+                                        {_user?.role === 'Member' && (
+                                            <button
+                                                className="flex h-9 w-full items-center justify-center rounded-md bg-orange-500 px-5 text-sm font-medium text-white transition hover:bg-orange-600"
+                                                onClick={() => handleSetAsModerator(_user?._id)}
+                                            >
+                                                Set as Moderator
+                                            </button>
+                                        )}
+                                        {_user?.role === 'Moderator' && (
+                                            <>
+                                                <button
+                                                    className="flex h-9 w-full items-center justify-center rounded-md bg-slate-500 px-5 text-sm font-medium text-white transition hover:bg-slate-700"
+                                                    onClick={() => handleSetAsMember(_user?._id)}
+                                                >
+                                                    Set as Member
+                                                </button>
+                                                <button
+                                                    className="flex h-9 w-full items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
+                                                    onClick={() => setSelectedUser(_user)}
+                                                >
+                                                    Change topic
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="w-[200px] space-y-2">
-                                    {_user?.role === 'Member' && (
-                                        <button
-                                            className="flex h-9 w-full items-center justify-center rounded-md bg-orange-500 px-5 text-sm font-medium text-white transition hover:bg-orange-600"
-                                            onClick={() => handleSetAsModerator(_user?._id)}
-                                        >
-                                            Set as Moderator
-                                        </button>
-                                    )}
-                                    {_user?.role === 'Moderator' && (
-                                        <button
-                                            className="flex h-9 w-full items-center justify-center rounded-md bg-slate-500 px-5 text-sm font-medium text-white transition hover:bg-slate-700"
-                                            onClick={() => handleSetAsMember(_user?._id)}
-                                        >
-                                            Set as Member
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        ) : (
-                            <></>
-                        )
-                    )}
+                            ) : (
+                                <div key={_user?._id} className="hidden"></div>
+                            )
+                        )}
+                </div>
             </div>
-        </div>
+
+            <ChangeTopicDialog
+                user={selectedUser}
+                setUser={setSelectedUser}
+                allTopics={topics}
+                currentUser={user}
+            />
+        </>
+    );
+}
+
+function ChangeTopicDialog({ user, setUser, allTopics, currentUser }) {
+    const [topics, setTopics] = useState([]);
+
+    useEffect(() => {
+        if (user?._id) {
+            fetchTopic();
+        }
+    }, [user]);
+
+    function fetchTopic() {
+        fetch(`${API}/topics?userId=${user?._id}`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                setTopics(resJson.data);
+            });
+    }
+
+    function handleToggleTopic(topic) {
+        if (topics?.findIndex((t) => t._id === topic._id) === -1) {
+            handleAddTopic(topic);
+        } else {
+            handleRemoveTopic(topic);
+        }
+    }
+
+    function handleAddTopic(topic) {
+        fetch(`${API}/users/mods?topicId=${topic?._id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + currentUser?.token,
+            },
+            body: JSON.stringify({ user_id: user?._id }),
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                fetchTopic();
+            });
+    }
+    function handleRemoveTopic(topic) {
+        fetch(`${API}/users/mods?topicId=${topic?._id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + currentUser?.token,
+            },
+            body: JSON.stringify({ user_id: user?._id }),
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                fetchTopic();
+            });
+    }
+
+    return (
+        <Dialog
+            className="fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto bg-black/50"
+            open={!!user}
+            onClose={() => setUser(null)}
+        >
+            <Dialog.Panel className="min-w-[400px] rounded-lg bg-white p-5">
+                <Dialog.Title className="mb-3 text-xl font-semibold leading-6">
+                    Change topic of moderator
+                </Dialog.Title>
+
+                <div className="flex w-full items-center pb-2">
+                    <div className="h-[60px] w-[60px] overflow-hidden rounded-full">
+                        <img className="h-full w-full object-cover" src={user?.avatar} />
+                    </div>
+                    <div className="ml-3 space-y-1 overflow-hidden">
+                        <p className="text-left text-lg font-semibold">
+                            {user?.first_name + ' ' + user?.last_name}
+                        </p>
+                        <p className="text-left text-gray-600">{user?.email}</p>
+                    </div>
+                </div>
+
+                <div>
+                    {allTopics?.map((topic) => (
+                        <button
+                            key={topic._id}
+                            className="flex w-full items-center space-x-3 border-b px-2 py-3 font-medium hover:bg-gray-100"
+                            onClick={() => handleToggleTopic(topic)}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className={clsx('h-6 w-6 text-gray-300', {
+                                    '!text-primary':
+                                        topics?.findIndex((t) => t._id === topic._id) !== -1,
+                                })}
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+
+                            <p
+                                className={clsx('', {
+                                    '!text-primary-dark':
+                                        topics?.findIndex((t) => t._id === topic._id) !== -1,
+                                })}
+                            >
+                                {topic?.name}
+                            </p>
+                        </button>
+                    ))}
+                </div>
+
+                <button
+                    className="flex h-9 w-full items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
+                    onClick={() => setUser(null)}
+                >
+                    Close
+                </button>
+            </Dialog.Panel>
+        </Dialog>
     );
 }
