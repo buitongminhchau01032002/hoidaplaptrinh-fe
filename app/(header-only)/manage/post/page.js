@@ -238,14 +238,19 @@ export default function ManagePostPage() {
                                 {/* Main */}
                                 <div href={'/'} className="mt-4 block">
                                     <h2 className="text-lg font-bold">{post?.title}</h2>
-                                    <div className="mt-2 text-gray-600">
-                                        <LinesEllipsis
-                                            text={striptags(post?.content)}
-                                            maxLine="3"
-                                            ellipsis="..."
-                                            trimRight
-                                            basedOn="letters"
-                                        />
+                                    <div
+                                        className="mt-2 h-[70px] overflow-y-hidden text-gray-600"
+                                        dangerouslySetInnerHTML={{
+                                            __html: striptags(post?.content, '<br>', '<p>'),
+                                        }}
+                                    >
+                                        {/* <LinesEllipsis
+                                                text={}
+                                                maxLine="3"
+                                                ellipsis="..."
+                                                trimRight
+                                                basedOn="letters"
+                                            /> */}
                                     </div>
                                     <div className="mt-3 flex items-center">
                                         <div className="rounded bg-primary px-2 py-1 text-sm font-medium text-white">

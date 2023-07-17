@@ -65,8 +65,12 @@ export default function Home() {
     }
 
     useEffect(() => {
-        let topicId = !searchParams?.topic ? 'all' : searchParams.topic;
-        let sortType = !searchParams?.sort ? 'latest' : searchParams.sort;
+        filterAndSort();
+    }, [posts, searchParams]);
+
+    function filterAndSort() {
+        let topicId = !searchParams?.get('topic') ? 'all' : searchParams?.get('topic');
+        let sortType = !searchParams?.get('sort') ? 'latest' : searchParams?.get('sort');
         setResultPosts(
             posts
                 .filter((post) => {
@@ -77,7 +81,7 @@ export default function Home() {
                 })
                 .sort((a, b) => {
                     if (sortType === 'latest') {
-                        return a.created_at - b.created_at;
+                        return moment(a.created_at) - moment(b.created_at);
                     }
                     if (sortType === 'most-comment') {
                         return b.comment_count - a.comment_count;
@@ -87,8 +91,9 @@ export default function Home() {
                     }
                 })
         );
-    }, [posts, searchParams?.topic, searchParams?.sort]);
+    }
 
+    console.log(posts);
     function handleDownVote(post) {
         fetch(`${API}/posts/${post._id}/down-vote`, {
             method: 'POST',
@@ -154,7 +159,6 @@ export default function Home() {
     }
 
     const objectQuery = Object.fromEntries(searchParams.entries());
-    console.log(posts);
     return (
         <>
             <div className="pt-5">
@@ -186,6 +190,26 @@ export default function Home() {
                 </div>
                 <div className="mt-4 space-y-4">
                     {loading && <Loading />}
+                    {!loading && resultPosts?.length === 0 && (
+                        <div className="flex flex-col items-center justify-center py-4">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="h-10 w-10"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                                />
+                            </svg>
+
+                            <p className="mt-2">There is no post</p>
+                        </div>
+                    )}
                     {resultPosts?.map((post) => (
                         <div key={post._id} className="flex rounded-lg bg-white">
                             {/* LEFT */}
