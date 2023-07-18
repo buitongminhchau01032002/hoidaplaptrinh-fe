@@ -75,7 +75,7 @@ export default function Header() {
                                 </svg>
                             </Popover.Button>
 
-                            <Popover.Panel className="absolute right-0 top-full z-10 max-h-[500px] w-96 translate-y-3 overflow-y-auto rounded-lg border bg-white p-2 shadow-xl">
+                            <Popover.Panel className="absolute right-0 top-full z-10 max-h-[500px] w-[450px] translate-y-3 overflow-y-auto rounded-lg border bg-white p-2 shadow-xl">
                                 {[1, 2, 3, 4, 5, 4].map((a) => (
                                     <NotiCard />
                                 ))}

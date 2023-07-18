@@ -29,7 +29,6 @@ export default function ManageMenu() {
     useEffect(() => {
         setMouted(true);
     }, []);
-    console.log(segment);
     return (
         mounted && (
             <div className="bg-white">

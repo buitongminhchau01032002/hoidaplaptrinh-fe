@@ -23,8 +23,6 @@ export default function TagsInput({ formik }) {
         );
     }
 
-    console.log('tags: ', formik.values?.tag_names);
-
     return (
         <div>
             <div className="relative">

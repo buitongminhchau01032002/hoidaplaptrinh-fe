@@ -94,7 +94,6 @@ export default function Home() {
         );
     }
 
-    console.log(posts);
     function handleDownVote(post) {
         fetch(`${API}/posts/${post._id}/down-vote`, {
             method: 'POST',

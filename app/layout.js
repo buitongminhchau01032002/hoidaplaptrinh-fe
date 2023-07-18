@@ -1,6 +1,7 @@
 import '../styles/tailwind.css';
 import Provider from '~/app/components/Provider';
 import ToastContainerClient from './components/ToastContainer';
+import NotiHandler from './components/NotiHandler';
 
 export const metadata = {
     title: 'Create Next App',
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
             <body className="bg-gray-100">
                 <Provider>
                     {children}
+                    <NotiHandler />
                     <ToastContainerClient />
                 </Provider>
             </body>
