@@ -11,7 +11,8 @@ import { API } from '~/constants';
 import colorizeCategory from '~/utils/colorizeCategory';
 
 export default function Sidebar() {
-    const [topics, setTopics] = useState();
+    const [topics, setTopics] = useState([]);
+    const [tags, setTags] = useState([]);
     const [trendingPosts, setTrendingPosts] = useState([]);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -32,6 +33,15 @@ export default function Sidebar() {
                 }
                 setTrendingPosts(resJson.data);
             });
+
+        fetch(`${API}/tags/popular`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    return;
+                }
+                setTags(resJson.data);
+            });
     }, []);
     function handleTopicFilter(topic) {
         const current = new URLSearchParams(Array.from(searchParams.entries())); // -> has to use this form
@@ -41,7 +51,7 @@ export default function Sidebar() {
 
         router.push(`${'/'}${query}`);
     }
-    // console.log(searchParams);
+
     return (
         <div>
             <div className="mb-5">
@@ -72,25 +82,19 @@ export default function Sidebar() {
             <div className="mb-5">
                 <p className="text-xl font-semibold">Popular tags</p>
                 <div className="mt-3 flex flex-wrap">
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
-                        Frontend
-                    </div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
-                        Backend
-                    </div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">Job</div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">Bug</div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
-                        Javascript
-                    </div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">Sql</div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">C++</div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
-                        Python
-                    </div>
-                    <div className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm">
-                        HTML, CSS
-                    </div>
+                    {tags.map((tag) => (
+                        <div
+                            key={tag._id}
+                            style={{
+                                backgroundColor: colorizeCategory({
+                                    created_at: Math.floor(Math.random() * 60),
+                                }),
+                            }}
+                            className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm"
+                        >
+                            {tag.name}
+                        </div>
+                    ))}
                 </div>
             </div>
             <div className="mb-5">

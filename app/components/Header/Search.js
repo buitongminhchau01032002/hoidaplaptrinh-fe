@@ -25,30 +25,26 @@ function stringToSlug(str) {
 
 function Search() {
     const [search, setSearch] = useState('');
-    const [posts, setPosts] = useState([]);
     const [searchPosts, setSearchPosts] = useState([]);
+    const [searched, setSearched] = useState(false);
 
-    useEffect(() => {
-        fetch(`${API}/posts`)
+    function getPosts() {
+        fetch(`${API}/posts/search?q=${search}`)
             .then((res) => res.json())
             .then((resJson) => {
                 if (resJson.error_key) {
-                    console.log(error);
+                    return;
                 }
-                setPosts(resJson.data);
+                setSearchPosts(resJson.data);
             });
-    }, []);
+    }
 
-    useEffect(() => {
-        if (!search) {
-            setSearchPosts([]);
-            return;
+    function handleKeyDown(e) {
+        if (e.key === 'Enter') {
+            getPosts();
+            setSearched(true);
         }
-        const newSearchPosts = posts
-            .filter((post) => stringToSlug(post.title).includes(stringToSlug(search)))
-            .slice(0, 5);
-        setSearchPosts(newSearchPosts);
-    }, [posts, search]);
+    }
 
     return (
         <div className="group group relative">
@@ -75,9 +71,10 @@ function Search() {
                     placeholder="Search post ... "
                     onChange={(e) => setSearch(e.target.value)}
                     value={search}
+                    onKeyDown={handleKeyDown}
                 />
             </div>
-            {search.length > 0 && (
+            {search.length > 0 && searched && (
                 <div className="invisible absolute left-0 right-0 top-10 max-h-[500px] overflow-y-auto rounded border bg-white p-2 shadow-lg group-focus-within:visible">
                     <div className="space-y-3">
                         {searchPosts.length === 0 && (

@@ -33,6 +33,7 @@ export default function Home() {
     const [resultPosts, setResultPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [topics, setTopics] = useState([]);
+    const [currentTopic, setCurrentTopic] = useState('All topics');
     const [idComfirmDelete, setIdComfirmDelete] = useState(null);
     const user = useSelector(userSelector);
     const router = useRouter();
@@ -67,11 +68,22 @@ export default function Home() {
 
     useEffect(() => {
         filterAndSort();
-    }, [posts, searchParams]);
+    }, [posts, topics, searchParams]);
 
     function filterAndSort() {
         let topicId = !searchParams?.get('topic') ? 'all' : searchParams?.get('topic');
         let sortType = !searchParams?.get('sort') ? 'latest' : searchParams?.get('sort');
+        console.log('topic id:', topicId);
+        if (topicId === 'all') {
+            setCurrentTopic('All topics');
+        } else {
+            console.log('topic', topics);
+            const index = topics.findIndex((t) => t._id === topicId);
+            if (index !== -1) {
+                setCurrentTopic(topics[index].name);
+            }
+        }
+
         setResultPosts(
             posts
                 .filter((post) => {
@@ -94,6 +106,7 @@ export default function Home() {
         );
     }
 
+    console.log(posts);
     function handleDownVote(post) {
         fetch(`${API}/posts/${post._id}/down-vote`, {
             method: 'POST',
@@ -183,7 +196,8 @@ export default function Home() {
             <div className="pt-5">
                 {/* TOP BAR */}
                 <div className="flex items-center justify-between rounded-lg bg-white p-3">
-                    <select
+                    <p className="text-xl font-semibold">{currentTopic}</p>
+                    {/* <select
                         onChange={(e) => handleSelectTopicChange(e.target.value)}
                         className="w-[200px] cursor-pointer rounded border px-3 py-1"
                         value={objectQuery?.topic || 'all'}
@@ -194,7 +208,7 @@ export default function Home() {
                                 {topic.name}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
                     <select
                         onChange={(e) => handleSort(e.target.value)}
                         className="w-[200px] cursor-pointer rounded border px-3 py-1"
@@ -207,6 +221,11 @@ export default function Home() {
                         ))}
                     </select>
                 </div>
+
+                {resultPosts.length > 0 && (
+                    <div className="mt-3 font-medium">{resultPosts.length + ' post(s)'}</div>
+                )}
+
                 <div className="mt-4 space-y-4">
                     {loading && <Loading />}
                     {!loading && resultPosts?.length === 0 && (
@@ -334,7 +353,7 @@ export default function Home() {
 
                                     {/* Date */}
                                     <div className="text-sm text-gray-600">
-                                        {moment(post?.created_at).format('HH:MM DD/MM/YYYY')}
+                                        {moment(post?.created_at).format('DD/MM/YYYY')}
                                     </div>
                                 </div>
 
