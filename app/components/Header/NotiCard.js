@@ -79,9 +79,9 @@ export default function NotiCard({ noti, onClick }) {
             <div className="flex-1 px-2">
                 <div className="flex items-baseline">
                     <p className="font-semibold">{noti?.actor_name}</p>
-                    <p className="ml-2 text-xs font-medium text-primary">{`• ${moment(
-                        noti.created_at
-                    ).format('HH:MM DD/MM/YYYY')}`}</p>
+                    <p className="ml-2 text-xs font-medium text-primary">
+                        {`• ${moment(noti.created_at).fromNow()}`}
+                    </p>
                 </div>
                 <p className="text-sm text-gray-700">{noti?.content}</p>
             </div>
