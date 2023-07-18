@@ -7,6 +7,7 @@ import { userSelector } from '~/redux/selectors';
 import { userActions } from '~/redux/slices/userSlice';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import NotiCard from './NotiCard';
 
 export default function Header() {
     const dispatch = useDispatch();
@@ -52,6 +53,36 @@ export default function Header() {
                             <span>Create post</span>
                         </Link>
 
+                        {/* NOTI */}
+                        <Popover className="relative">
+                            <Popover.Button
+                                as="button"
+                                className="flex items-center px-2 outline-none hover:text-primary-dark"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="h-6 w-6"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                                    />
+                                </svg>
+                            </Popover.Button>
+
+                            <Popover.Panel className="absolute right-0 top-full z-10 max-h-[500px] w-96 translate-y-3 overflow-y-auto rounded-lg border bg-white p-2 shadow-xl">
+                                {[1, 2, 3, 4, 5, 4].map((a) => (
+                                    <NotiCard />
+                                ))}
+                            </Popover.Panel>
+                        </Popover>
+
+                        {/* USER */}
                         <div className="flex items-center space-x-1">
                             <Link
                                 href={'/profile/' + user._id}
@@ -60,6 +91,7 @@ export default function Header() {
                                 <img className="h-full w-full object-cover" src={user?.avatar} />
                             </Link>
 
+                            {/* USER */}
                             <Popover className="relative">
                                 <Popover.Button
                                     as="button"

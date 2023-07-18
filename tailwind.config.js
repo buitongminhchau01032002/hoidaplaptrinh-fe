@@ -13,8 +13,8 @@ module.exports = {
                 test: '0 0 1px 1px red',
             },
             colors: {
-                primary: '#3F9EFF',
-                'primary-dark': '#2884E3',
+                primary: '#b673f8',
+                'primary-dark': '#a358ee',
             },
         },
     },

@@ -42,23 +42,25 @@ export default function ManageMenu() {
                     Posts
                 </Link>
                 {user?.role === 'Administrator' && (
-                    <Link
-                        className={clsx('block border-b p-3 font-semibold', {
-                            'text-primary': segment === 'topic',
-                        })}
-                        href="/manage/topic"
-                    >
-                        Topics
-                    </Link>
+                    <>
+                        <Link
+                            className={clsx('block border-b p-3 font-semibold', {
+                                'text-primary': segment === 'topic',
+                            })}
+                            href="/manage/topic"
+                        >
+                            Topics
+                        </Link>
+                        <Link
+                            className={clsx('block border-b p-3 font-semibold', {
+                                'text-primary': segment === 'user',
+                            })}
+                            href="/manage/user"
+                        >
+                            Users
+                        </Link>
+                    </>
                 )}
-                <Link
-                    className={clsx('block border-b p-3 font-semibold', {
-                        'text-primary': segment === 'user',
-                    })}
-                    href="/manage/user"
-                >
-                    Users
-                </Link>
             </div>
         )
     );

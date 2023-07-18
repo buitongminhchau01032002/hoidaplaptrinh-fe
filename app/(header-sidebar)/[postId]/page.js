@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import moment from 'moment';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PostContentEditor from '~/app/components/PostContentEditor';
 import VoteControl from '~/app/components/VoteControl';
@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import CommentCard from './components/CommentCard';
 import socket from '~/utils/socket';
 import { useRouter } from 'next/navigation';
+import EditCommentDialog from './components/EditCommentDialog';
 
 const validationSchema = Yup.object({
     content: Yup.string().required('Content is required'),
@@ -30,6 +31,7 @@ export default function DetailPostPage({ params }) {
     const [random, setRandom] = useState(Math.random());
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const user = useSelector(userSelector);
+    const [topicsByUser, setTopicsByUser] = useState(null);
     const router = useRouter();
 
     const formik = useFormik({
@@ -43,7 +45,8 @@ export default function DetailPostPage({ params }) {
 
     function onCreateComment(value) {
         console.log(value);
-        setComments((prev) => [...prev, value]);
+        getPost();
+        // setComments((prev) => [...prev, value]);
     }
 
     useEffect(() => {
@@ -56,13 +59,49 @@ export default function DetailPostPage({ params }) {
 
     useEffect(() => {
         getPost();
-
+        getTopicsByUser();
         // console.log(socket);
     }, []);
 
     useEffect(() => {
         getCommentsByPost(post);
     }, [post]);
+
+    const isModOfTopic = useMemo(() => {
+        if (!post) {
+            return false;
+        }
+        if (!user) {
+            return false;
+        }
+        if (!topicsByUser) {
+            return false;
+        }
+        if (user?.role === 'Member') {
+            return false;
+        }
+        const index = topicsByUser.findIndex((t) => t._id === post?.topic?._id);
+        if (index !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }, [topicsByUser, user, post]);
+
+    function getTopicsByUser() {
+        if (!user) {
+            return;
+        }
+        fetch(`${API}/topics?userId=${user?._id}`)
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                setTopicsByUser(resJson.data);
+            });
+    }
 
     function getCommentsByPost(post) {
         if (!post) {
@@ -206,6 +245,51 @@ export default function DetailPostPage({ params }) {
             });
     }
 
+    function handleBlock() {
+        fetch(`${API}/posts/${post?._id}/block`, {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + user?.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    toast.error('Something went wrong!');
+                    return;
+                }
+                toast.success('Block successfully!');
+                getPost();
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error('Something went wrong!');
+            });
+    }
+    function handleUnblock() {
+        fetch(`${API}/posts/${post?._id}/unblock`, {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + user?.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    toast.error('Something went wrong!');
+                    return;
+                }
+                toast.success('Unblock successfully!');
+                getPost();
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error('Something went wrong!');
+            });
+    }
+
     return (
         <>
             <div className="mt-5 rounded-lg bg-white">
@@ -231,20 +315,6 @@ export default function DetailPostPage({ params }) {
                 )}
                 {post && (
                     <>
-                        {user?.role === 'Administrator' && (
-                            <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2">
-                                <div className=""></div>
-                                {!post?.is_blocked && (
-                                    <Link
-                                        href="/login"
-                                        className="mr-[85px] flex h-9 min-w-[120px] items-center justify-center rounded-md bg-red-500 px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
-                                    >
-                                        Block post
-                                    </Link>
-                                )}
-                            </div>
-                        )}
-
                         {/* POST */}
                         <div className="flex rounded-lg bg-white">
                             {/* LEFT */}
@@ -472,14 +542,36 @@ export default function DetailPostPage({ params }) {
                 )}
 
                 {/* COMMENT */}
-                <p className="mt-5 px-3 text-lg font-bold">{`Comments (${
-                    post?.comment_count || 0
-                })`}</p>
+                <div className="mt-5 flex items-center justify-between">
+                    <p className="px-3 text-lg font-bold">{`Comments (${
+                        post?.comment_count || 0
+                    })`}</p>
+                    {(user?.role === 'Administrator' || isModOfTopic) && (
+                        <div className="mr-3">
+                            {!post?.is_blocked && (
+                                <button
+                                    className="flex h-8 min-w-[120px] items-center justify-center rounded-md bg-red-500 px-5 text-sm font-medium text-white transition hover:bg-red-400"
+                                    onClick={handleBlock}
+                                >
+                                    Block comment
+                                </button>
+                            )}
+                            {post?.is_blocked && (
+                                <button
+                                    className="flex h-8 min-w-[120px] items-center justify-center rounded-md bg-gray-500 px-5 text-sm font-medium text-white transition hover:bg-gray-400"
+                                    onClick={handleUnblock}
+                                >
+                                    Unblock comment
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
                 <div className="px-3 py-2">
-                    {!user ? (
-                        <div>You must login to write comments</div>
-                    ) : post?.is_blocked ? (
-                        <div>This post is blocked comment</div>
+                    {post?.is_blocked ? (
+                        <div className="text-red-500">This post is blocked comment</div>
+                    ) : !user ? (
+                        <div className="text-primary-dark">You must login to write comments</div>
                     ) : (
                         <div className="border-b pb-3">
                             <div
@@ -582,6 +674,7 @@ export default function DetailPostPage({ params }) {
 function ReplyCard({ post, comment, onChange, onChangePost }) {
     const user = useSelector(userSelector);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [openEditDialog, setOpenEditDialog] = useState(false);
 
     function handleDeleteComment() {
         fetch(`${API}/comments/${comment._id}`, {
@@ -629,29 +722,31 @@ function ReplyCard({ post, comment, onChange, onChangePost }) {
                             </div>
                             {/* Date */}
                             <div className="ml-2 text-sm text-gray-600">
-                                {`• ${moment(comment?.created_at).format('DD.MM.YYYY')}`}
+                                {`• ${moment(comment?.created_at).format('HH:MM DD.MM.YYYY')}`}
                             </div>
                         </div>
 
                         {user?._id === comment?.author?._id && (
                             <div className="flex space-x-2">
-                                {/* EIDT */}
-                                <button>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="h-6 w-6"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                                        />
-                                    </svg>
-                                </button>
+                                {/* EDIT */}
+                                {!post?.is_blocked && (
+                                    <button onClick={() => setOpenEditDialog(true)}>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            className="h-6 w-6"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                            />
+                                        </svg>
+                                    </button>
+                                )}
                                 {/* DELETE */}
                                 <button
                                     className="text-red-500"
@@ -708,6 +803,13 @@ function ReplyCard({ post, comment, onChange, onChangePost }) {
                     </div>
                 </Dialog.Panel>
             </Dialog>
+            <EditCommentDialog
+                open={openEditDialog}
+                setOpen={setOpenEditDialog}
+                comment={comment}
+                post={post}
+                onChange={onChangePost}
+            />
         </>
     );
 }
