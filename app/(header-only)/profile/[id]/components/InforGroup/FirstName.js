@@ -7,7 +7,7 @@ import { API } from '~/constants';
 import { userActions } from '~/redux/slices/userSlice';
 
 const validationSchema = Yup.object({
-    first_name: Yup.string().required('Trường này bắt buộc'),
+    first_name: Yup.string().required('This field is required!'),
 });
 
 function FirstName({ user, currentUser, onChange, isOwner }) {
@@ -25,7 +25,7 @@ function FirstName({ user, currentUser, onChange, isOwner }) {
 
     function handleSubmit(values) {
         setLoading(true);
-        fetch(`${API}/users/update`, {
+        fetch(`${API}/me`, {
             method: 'PATCH',
             headers: {
                 Authorization: 'Bearer ' + currentUser?.token,

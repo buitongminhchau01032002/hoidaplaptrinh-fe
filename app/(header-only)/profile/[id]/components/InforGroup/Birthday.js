@@ -28,7 +28,7 @@ function Birthday({ user, currentUser, onChange, isOwner }) {
     function handleSubmit(values) {
         setLoading(true);
         const birthday = values.birthday;
-        fetch(`${API}/users/update`, {
+        fetch(`${API}/me`, {
             method: 'PATCH',
             headers: {
                 Authorization: 'Bearer ' + currentUser?.token,

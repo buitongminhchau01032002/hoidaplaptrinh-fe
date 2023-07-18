@@ -23,8 +23,8 @@ export default function CreatePostPage({ params }) {
     const [loading, setLoading] = useState(false);
     const [post, setPost] = useState(null);
     const user = useSelector(userSelector);
-    const showSuccessNoti = () => toast.success('Create post successfully!');
-    const router = useRouter();
+    const showSuccessNoti = () => toast.success('Update post successfully!');
+    // const router = useRouter();
 
     useEffect(() => {
         getPost();
@@ -49,16 +49,16 @@ export default function CreatePostPage({ params }) {
             content: post?.content || '',
             topic_id: post?.topic?._id || '',
             tag_names: post?.tags?.map((t) => t.name) || [],
-            images: post?.image || [],
+            images: [],
         },
         enableReinitialize: true,
         validationSchema,
-        onSubmit: handleCreatePost,
+        onSubmit: handleUpdatePost,
     });
 
-    console.log(post?.images);
+    console.log(formik.values.images);
 
-    async function handleCreatePost(values) {
+    async function handleUpdatePost(values) {
         setLoading(true);
         try {
             let linkImages;
@@ -79,11 +79,11 @@ export default function CreatePostPage({ params }) {
                 if (uploadResult.error_key) {
                     throw uploadResult.message;
                 }
-                linkImages = uploadResult.urls;
+                linkImages = uploadResult.data;
             }
 
-            const data = await fetch(`${API}/posts`, {
-                method: 'POST',
+            const data = await fetch(`${API}/posts/${post?._id}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + user?.token,
@@ -94,7 +94,7 @@ export default function CreatePostPage({ params }) {
             if (data.error_key) {
                 throw data.message;
             }
-            router.push('/profile/' + user?._id);
+            // router.push('/profile/' + user?._id);
             // formik.resetForm();
             showSuccessNoti();
         } catch (error) {
@@ -192,9 +192,10 @@ export default function CreatePostPage({ params }) {
 
                     <div className="mb-4">
                         <ImageInput
+                            edit={false}
                             formik={formik}
                             formikField="images"
-                            initImage={formik.initialValues?.images}
+                            initImage={post?.images || []}
                         />
                     </div>
                     <div className="flex items-center justify-between">

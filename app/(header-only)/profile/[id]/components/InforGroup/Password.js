@@ -8,15 +8,15 @@ import { toast } from 'react-toastify';
 import { API } from '~/constants';
 
 const validationSchema = Yup.object({
-    currentPassword: Yup.string()
-        .required('Trường này bắt buộc')
-        .min(6, 'Mật khẩu phải ít nhất 6 kí tự'),
-    newPassword: Yup.string()
-        .required('Trường này bắt buộc')
-        .min(6, 'Mật khẩu phải ít nhất 6 kí tự'),
-    confirmNewPassword: Yup.string()
-        .required('Trường này bắt buộc')
-        .min(6, 'Mật khẩu phải ít nhất 6 kí tự'),
+    old_password: Yup.string()
+        .required('This field is required!')
+        .min(6, 'Password must be at least 6 characters!'),
+    password: Yup.string()
+        .required('This field is required!')
+        .min(6, 'Password must be at least 6 characters!'),
+    confirm_password: Yup.string()
+        .required('This field is required!')
+        .min(6, 'Password must be at least 6 characters!'),
 });
 
 function Password({ user, currentUser, onChange, isOwner }) {
@@ -25,9 +25,9 @@ function Password({ user, currentUser, onChange, isOwner }) {
 
     const formik = useFormik({
         initialValues: {
-            currentPassword: '',
-            newPassword: '',
-            confirmNewPassword: '',
+            old_password: '',
+            password: '',
+            confirm_password: '',
         },
         validationSchema,
         enableReinitialize: true,
@@ -36,7 +36,7 @@ function Password({ user, currentUser, onChange, isOwner }) {
 
     function handleSubmit(values) {
         setLoading(true);
-        fetch(`${API}/users/change_password`, {
+        fetch(`${API}/me/change-password`, {
             method: 'PATCH',
             headers: {
                 Authorization: 'Bearer ' + currentUser?.token,
@@ -45,10 +45,10 @@ function Password({ user, currentUser, onChange, isOwner }) {
             body: JSON.stringify(values),
         })
             .then((res) => res.json())
-            .then((data) => {
-                if (data.error) {
-                    console.log(data.error);
-                    showErorrNoti();
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson.error_key);
+                    toast.error('Something went wrong');
                     return;
                 }
                 toast.success('Change passsword successfully!');
@@ -67,87 +67,85 @@ function Password({ user, currentUser, onChange, isOwner }) {
             {show ? (
                 <form className="mb-4" onSubmit={formik.handleSubmit}>
                     <div>
-                        <label className="font-semibold">Mật khẩu hiện tại</label>
+                        <label className="font-semibold">Current password</label>
                         <div className="mt-1 flex items-center space-x-1">
                             <input
-                                name="currentPassword"
+                                name="old_password"
                                 type="password"
                                 className={clsx('text-input flex-1', {
                                     invalid:
-                                        formik.errors.currentPassword &&
-                                        formik.touched.currentPassword,
+                                        formik.errors.old_password && formik.touched.old_password,
                                     disabled: !isOwner,
                                 })}
                                 disabled={!isOwner}
-                                placeholder="Mật khẩu hiện tại"
+                                placeholder="Current password"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.currentPassword}
+                                value={formik.values.old_password}
                             />
                         </div>
                         <div
                             className={clsx('invisible text-sm', {
                                 '!visible text-red-500':
-                                    formik.errors.currentPassword && formik.touched.currentPassword,
+                                    formik.errors.old_password && formik.touched.old_password,
                             })}
                         >
-                            {formik.errors.currentPassword || 'No error message'}
+                            {formik.errors.old_password || 'No error message'}
                         </div>
                     </div>
                     <div>
-                        <label className="font-semibold">Mật khẩu mới</label>
+                        <label className="font-semibold">New password</label>
                         <div className="mt-1 flex items-center space-x-1">
                             <input
-                                name="newPassword"
+                                name="password"
                                 type="password"
                                 className={clsx('text-input flex-1', {
-                                    invalid:
-                                        formik.errors.newPassword && formik.touched.newPassword,
+                                    invalid: formik.errors.password && formik.touched.password,
                                     disabled: !isOwner,
                                 })}
                                 disabled={!isOwner}
-                                placeholder="Mật khẩu mới"
+                                placeholder="New password"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.newPassword}
+                                value={formik.values.password}
                             />
                         </div>
                         <div
                             className={clsx('invisible text-sm', {
                                 '!visible text-red-500':
-                                    formik.errors.newPassword && formik.touched.newPassword,
+                                    formik.errors.password && formik.touched.password,
                             })}
                         >
-                            {formik.errors.newPassword || 'No error message'}
+                            {formik.errors.password || 'No error message'}
                         </div>
                     </div>
                     <div>
-                        <label className="font-semibold">Nhập lại mật khẩu mới</label>
+                        <label className="font-semibold">Confirm password</label>
                         <div className="mt-1 flex items-center space-x-1">
                             <input
-                                name="confirmNewPassword"
+                                name="confirm_password"
                                 type="password"
                                 className={clsx('text-input flex-1', {
                                     invalid:
-                                        formik.errors.confirmNewPassword &&
-                                        formik.touched.confirmNewPassword,
+                                        formik.errors.confirm_password &&
+                                        formik.touched.confirm_password,
                                     disabled: !isOwner,
                                 })}
                                 disabled={!isOwner}
-                                placeholder="Nhập lại mật khẩu mới"
+                                placeholder="Confirm password"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                value={formik.values.confirmNewPassword}
+                                value={formik.values.confirm_password}
                             />
                         </div>
                         <div
                             className={clsx('invisible text-sm', {
                                 '!visible text-red-500':
-                                    formik.errors.confirmNewPassword &&
-                                    formik.touched.confirmNewPassword,
+                                    formik.errors.confirm_password &&
+                                    formik.touched.confirm_password,
                             })}
                         >
-                            {formik.errors.confirmNewPassword || 'No error message'}
+                            {formik.errors.confirm_password || 'No error message'}
                         </div>
                     </div>
                     <div className="flex space-x-3">

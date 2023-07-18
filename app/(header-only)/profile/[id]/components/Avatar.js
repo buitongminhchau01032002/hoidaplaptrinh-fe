@@ -18,27 +18,37 @@ export default function Avatar({ user, currentUser, isOwner, onChange }) {
             setReview(URL.createObjectURL(file));
             const formData = new FormData();
             formData.append('image', file);
-
             setLoading(true);
 
             try {
                 const uploadObj = await fetch(`${API}/upload/images/single`, {
                     method: 'POST',
+                    headers: {
+                        Authorization: 'Bearer ' + currentUser?.token,
+                    },
                     body: formData,
                 }).then((res) => res.json());
-                const data = await fetch(`${API}/users/update`, {
+                const resJson = await fetch(`${API}/me`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: 'Bearer ' + currentUser?.token,
                     },
-                    body: JSON.stringify({ avatar: uploadObj.url }),
+                    body: JSON.stringify({ avatar: uploadObj.data }),
                 }).then((res) => res.json());
-                console.log(data);
-                setLoading(false);
+                console.log(resJson);
+                if (resJson.error_key) {
+                    toast.error('Something went wrong');
+                }
+                dispatch(
+                    userActions.update({
+                        avatar: uploadObj.data,
+                    })
+                );
             } catch (err) {
                 console.log(err);
                 toast.error('Something went wrong');
+            } finally {
                 setLoading(false);
             }
         }
@@ -67,7 +77,7 @@ export default function Avatar({ user, currentUser, isOwner, onChange }) {
                     </label>
                 )}
                 {loading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/50">
+                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-white/50">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"

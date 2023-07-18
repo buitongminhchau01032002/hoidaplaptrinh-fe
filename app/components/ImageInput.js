@@ -124,7 +124,7 @@ function ImageInput({ formik, formikField, edit = true, initImage = [] }) {
                             />
                         </svg>
 
-                        <div className="mt-1">Xoá ảnh</div>
+                        <div className="mt-1">Delete Image</div>
                     </button>
                 </div>
             )}
