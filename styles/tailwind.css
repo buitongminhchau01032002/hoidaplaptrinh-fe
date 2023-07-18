@@ -10,6 +10,9 @@
     select {
         @apply caret-primary-dark outline-none;
     }
+    html {
+        scroll-behavior: smooth;
+    }
 }
 
 @layer components {

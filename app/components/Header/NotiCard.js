@@ -7,13 +7,36 @@ import { API } from '~/constants';
 import { userSelector } from '~/redux/selectors';
 import { notisActions } from '~/redux/slices/notiSlice';
 
+const NOTI_TYPE = {
+    CreateComment: 'create-comment',
+    CreateReply: 'create-reply',
+    ApprovePost: 'approve-post',
+    DenyPost: 'deny-post',
+    ApproveComment: 'approve-comment',
+    UnapproveComment: 'unapprove-comment',
+    BlockPost: 'block-post',
+    UnblockPost: 'unblock-post',
+};
+
 export default function NotiCard({ noti, onClick }) {
     const user = useSelector(userSelector);
     const dispatch = useDispatch();
     const router = useRouter();
 
     function handleClickNoti() {
-        router.push(`/${noti?.post_id}`);
+        if (
+            noti.event === NOTI_TYPE.CreateComment ||
+            noti.event === NOTI_TYPE.CreateReply ||
+            noti.event === NOTI_TYPE.ApproveComment ||
+            noti.event === NOTI_TYPE.UnapproveComment
+        ) {
+            // go to post and scroll to comment
+            router.push(`/${noti?.post_id}?comment-id=${noti.comment_id}`);
+        } else if (noti.event !== NOTI_TYPE.DenyPost) {
+            // go to post
+            router.push(`/${noti?.post_id}`);
+        }
+
         fetch(`${API}/notifications/${noti?._id}/read`, {
             method: 'POST',
             headers: {
@@ -26,9 +49,26 @@ export default function NotiCard({ noti, onClick }) {
                     console.log(resJson);
                     return;
                 }
-                dispatch(notisActions.setNoti(resJson.data));
+                fetchNotis();
             });
         onClick();
+    }
+
+    function fetchNotis() {
+        fetch(`${API}/notifications`, {
+            headers: {
+                Authorization: 'Bearer ' + user?.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                console.log('get noti');
+                dispatch(notisActions.setNoti(resJson.data));
+            });
     }
     return (
         <div

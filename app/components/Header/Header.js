@@ -6,16 +6,22 @@ import Search from './Search';
 import { userSelector } from '~/redux/selectors';
 import { userActions } from '~/redux/slices/userSlice';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import NotiCard from './NotiCard';
-import { notisSelector, unreadNotiCountSelector } from '~/redux/selectors/notisSelector';
+import {
+    notisSelector,
+    unreadNotiCountSelector,
+    unreadNotisSelector,
+} from '~/redux/selectors/notisSelector';
 import { socket } from '../NotiHandler';
+import { SOCKET_EVENT } from '~/constants';
 
 export default function Header() {
     const dispatch = useDispatch();
     const user = useSelector(userSelector);
     const notis = useSelector(notisSelector);
-    const unreadNotiCount = useSelector(unreadNotiCountSelector);
+    console.log('noti: ', notis);
+    const unreadNotis = useMemo(() => notis?.filter((noti) => noti.is_read === false), [notis]);
 
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
@@ -86,9 +92,9 @@ export default function Header() {
                                         />
                                     </svg>
 
-                                    {unreadNotiCount && (
+                                    {unreadNotis?.length > 0 && (
                                         <div className="absolute right-0 top-0 rounded-full bg-red-400 px-2 py-0.5 text-[11px] font-medium text-white">
-                                            {unreadNotiCount}
+                                            {unreadNotis?.length}
                                         </div>
                                     )}
                                 </div>

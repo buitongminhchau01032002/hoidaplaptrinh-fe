@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import moment from 'moment';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PostContentEditor from '~/app/components/PostContentEditor';
 import VoteControl from '~/app/components/VoteControl';
@@ -15,6 +15,7 @@ import CommentVoteControl from '~/app/components/CommentVoteControl';
 import { Dialog } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import CommentCard from './components/CommentCard';
+import { useSearchParams } from 'next/navigation';
 
 import { useRouter } from 'next/navigation';
 import EditCommentDialog from './components/EditCommentDialog';
@@ -676,6 +677,30 @@ function ReplyCard({ post, comment, onChange, onChangePost }) {
     const user = useSelector(userSelector);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
+    const searchParams = useSearchParams();
+    const [isHighlight, setIsHighlight] = useState(false);
+
+    const myRef = useRef(null);
+
+    const executeScroll = () => myRef.current.scrollIntoView();
+
+    useEffect(() => {
+        const id = searchParams.get('comment-id');
+        console.log(id);
+        console.log(comment?._id);
+        let timer;
+        if (id && id === comment?._id) {
+            console.log('scroll');
+            executeScroll();
+            setIsHighlight(true);
+            setTimeout(() => {
+                setIsHighlight(false);
+            }, 3000);
+        }
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [searchParams]);
 
     function handleDeleteComment() {
         fetch(`${API}/comments/${comment._id}`, {
@@ -704,7 +729,12 @@ function ReplyCard({ post, comment, onChange, onChangePost }) {
 
     return (
         <>
-            <div className="flex px-2 py-3">
+            <div
+                className={clsx('relative flex  px-2 py-3 transition duration-500', {
+                    'bg-violet-100': isHighlight,
+                })}
+            >
+                <div className="bg-red absolute -top-[100px] h-3" ref={myRef}></div>
                 <div className="flex-1 space-y-2 pl-3">
                     <div className="flex items-center justify-between">
                         {/* User */}

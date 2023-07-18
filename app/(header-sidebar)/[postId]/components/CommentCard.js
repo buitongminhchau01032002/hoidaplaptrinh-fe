@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import moment from 'moment';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PostContentEditor from '~/app/components/PostContentEditor';
 import VoteControl from '~/app/components/VoteControl';
@@ -14,6 +14,7 @@ import CommentVoteControl from '~/app/components/CommentVoteControl';
 import { Dialog } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import EditCommentDialog from './EditCommentDialog';
+import { useSearchParams } from 'next/navigation';
 
 const validationSchema = Yup.object({
     content: Yup.string().required('Content is required'),
@@ -24,6 +25,31 @@ export default function CommentCard({ post, comment, onChange, onChangePost }) {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openReplyDialog, setOpenReplyDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
+    const searchParams = useSearchParams();
+    const [isHighlight, setIsHighlight] = useState(false);
+
+    const myRef = useRef(null);
+
+    const executeScroll = () => myRef.current.scrollIntoView();
+
+    useEffect(() => {
+        const id = searchParams.get('comment-id');
+        console.log(id);
+        console.log(comment?._id);
+        let timer;
+        if (id && id === comment?._id) {
+            console.log('scroll');
+            executeScroll();
+            setIsHighlight(true);
+            setTimeout(() => {
+                setIsHighlight(false);
+            }, 3000);
+        }
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [searchParams]);
+
     function handleDownVote() {
         fetch(`${API}/comments/${comment._id}/down-vote`, {
             method: 'POST',
@@ -129,7 +155,12 @@ export default function CommentCard({ post, comment, onChange, onChangePost }) {
 
     return (
         <>
-            <div className="flex px-2 py-3">
+            <div
+                className={clsx('relative flex px-2 py-3', {
+                    'bg-violet-100': isHighlight,
+                })}
+            >
+                <div className="bg-red absolute -top-[100px] h-3" ref={myRef}></div>
                 {/* SCORE */}
                 <div className="flex w-[52px] flex-col items-center border-r pr-3">
                     <CommentVoteControl

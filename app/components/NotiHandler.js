@@ -14,8 +14,9 @@ export default function NotiHandler() {
     const dispatch = useDispatch();
     useEffect(() => {
         console.log('mounted');
-        initSocket();
         initNotis();
+        initSocket();
+
         return () => {
             console.log('unmounted');
         };
@@ -26,8 +27,21 @@ export default function NotiHandler() {
             // login
             socket.emit(SOCKET_EVENT.Authenticate, user?.token);
             socket.on(SOCKET_EVENT.Notify, (data) => {
-                console.log(data);
+                fetch(`${API}/notifications`, {
+                    headers: {
+                        Authorization: 'Bearer ' + user?.token,
+                    },
+                })
+                    .then((res) => res.json())
+                    .then((resJson) => {
+                        if (resJson.error_key) {
+                            console.log(resJson);
+                            return;
+                        }
+                        dispatch(notisActions.setNoti(resJson.data));
+                    });
             });
+            initNotis();
             console.log('login');
         } else {
             // logout
@@ -51,6 +65,11 @@ export default function NotiHandler() {
     }
 
     function initNotis() {
+        if (user) {
+            fetchNotis();
+        }
+    }
+    function fetchNotis() {
         fetch(`${API}/notifications`, {
             headers: {
                 Authorization: 'Bearer ' + user?.token,
