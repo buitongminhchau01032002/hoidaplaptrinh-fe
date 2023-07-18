@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
+import { HOST } from '~/constants';
 
-const socket = io('http://localhost:8888', { transports: ['websocket'] });
+const socket = io(HOST, { transports: ['websocket'] });
 
 socket.on('connect', () => {
     console.log('🔌 client connected');

@@ -1,6 +1,7 @@
 'use client';
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice';
+import notisReducer from './slices/notiSlice';
 
 const localStorageMiddleware = (store) => (next) => (action) => {
     const result = next(action);
@@ -28,7 +29,7 @@ const reHydrateStore = () => {
 };
 
 const store = configureStore({
-    reducer: { user: userReducer },
+    reducer: { user: userReducer, notis: notisReducer },
     preloadedState: reHydrateStore(),
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),
 });

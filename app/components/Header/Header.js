@@ -8,10 +8,12 @@ import { userActions } from '~/redux/slices/userSlice';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import NotiCard from './NotiCard';
+import { notisSelector } from '~/redux/selectors/notisSelector';
 
 export default function Header() {
     const dispatch = useDispatch();
     const user = useSelector(userSelector);
+    const notis = useSelector(notisSelector);
 
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
@@ -76,8 +78,8 @@ export default function Header() {
                             </Popover.Button>
 
                             <Popover.Panel className="absolute right-0 top-full z-10 max-h-[500px] w-[450px] translate-y-3 overflow-y-auto rounded-lg border bg-white p-2 shadow-xl">
-                                {[1, 2, 3, 4, 5, 4].map((a) => (
-                                    <NotiCard />
+                                {notis?.map((noti) => (
+                                    <NotiCard key={noti?._id} noti={noti} />
                                 ))}
                             </Popover.Panel>
                         </Popover>

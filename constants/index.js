@@ -1,4 +1,5 @@
-export const API = 'http://localhost:8888/api/v1';
+export const HOST = 'http://localhost:8888';
+export const API = `${HOST}/api/v1`;
 
 export const SOCKET_EVENT = {
     JoinRoom: 'join room',
