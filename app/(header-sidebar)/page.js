@@ -11,6 +11,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import striptags from 'striptags';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog } from '@headlessui/react';
+import { toast } from 'react-toastify';
 
 const SORT_TYPE = [
     {
@@ -81,7 +82,7 @@ export default function Home() {
                 })
                 .sort((a, b) => {
                     if (sortType === 'latest') {
-                        return moment(a.created_at) - moment(b.created_at);
+                        return moment(b.created_at) - moment(a.created_at);
                     }
                     if (sortType === 'most-comment') {
                         return b.comment_count - a.comment_count;
@@ -152,10 +153,29 @@ export default function Home() {
     }
 
     function handleDeletePost() {
-        // TODO: call API delete post
-
-        setIdComfirmDelete(null);
-        getPosts();
+        fetch(`${API}/posts/${idComfirmDelete}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + user.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                toast.success('Delete post successfully!');
+                getPosts();
+            })
+            .catch((err) => {
+                toast.error('Something went wrong!');
+                console.log(err);
+            })
+            .finally(() => {
+                setIdComfirmDelete(null);
+            });
     }
 
     const objectQuery = Object.fromEntries(searchParams.entries());

@@ -215,7 +215,7 @@ export default function ManagePostPage() {
                                             <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
                                                 <img
                                                     className="h-full w-full object-cover object-center"
-                                                    src="https://media.istockphoto.com/id/184276818/photo/red-apple.jpg?s=612x612&w=0&k=20&c=NvO-bLsG0DJ_7Ii8SSVoKLurzjmV0Qi4eGfn6nW3l5w="
+                                                    src={post?.author?.avatar}
                                                 />
                                             </div>
                                             <p className="ml-2 text-sm font-bold text-gray-700">
