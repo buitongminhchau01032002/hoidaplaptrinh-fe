@@ -271,7 +271,7 @@ export default function Profile({ params }) {
                 </div>
             </div> */}
 
-            {isOwner && (
+            {isOwner() && (
                 <div>
                     <h2 className="py-10 text-center text-2xl font-bold">POST LIST</h2>
                     <div className="grid grid-cols-3 gap-7">
