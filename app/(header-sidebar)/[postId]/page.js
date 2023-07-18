@@ -15,9 +15,10 @@ import CommentVoteControl from '~/app/components/CommentVoteControl';
 import { Dialog } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import CommentCard from './components/CommentCard';
-import socket from '~/utils/socket';
+
 import { useRouter } from 'next/navigation';
 import EditCommentDialog from './components/EditCommentDialog';
+import { socket } from '~/app/components/NotiHandler';
 
 const validationSchema = Yup.object({
     content: Yup.string().required('Content is required'),
@@ -46,16 +47,16 @@ export default function DetailPostPage({ params }) {
     function onCreateComment(value) {
         console.log(value);
         getPost();
-        // setComments((prev) => [...prev, value]);
     }
 
     useEffect(() => {
-        socket.on(SOCKET_EVENT.CreateComment, onCreateComment);
+        console.log(socket);
+        socket?.on(SOCKET_EVENT.CreateComment, onCreateComment);
         console.log('run');
         return () => {
-            socket.emit(SOCKET_EVENT.LeaveRoom, `post-${post?._id}`);
+            socket?.emit(SOCKET_EVENT.LeaveRoom, `post-${post?._id}`);
         };
-    }, []);
+    }, [socket]);
 
     useEffect(() => {
         getPost();

@@ -8,22 +8,31 @@ import { userActions } from '~/redux/slices/userSlice';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import NotiCard from './NotiCard';
-import { notisSelector } from '~/redux/selectors/notisSelector';
+import { notisSelector, unreadNotiCountSelector } from '~/redux/selectors/notisSelector';
+import { socket } from '../NotiHandler';
 
 export default function Header() {
     const dispatch = useDispatch();
     const user = useSelector(userSelector);
     const notis = useSelector(notisSelector);
+    const unreadNotiCount = useSelector(unreadNotiCountSelector);
 
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
         setMounted(true);
     }, []);
 
+    function logout() {
+        const userId = user?.id;
+        dispatch(userActions.logout());
+        socket.emit(SOCKET_EVENT.LogOut, userId);
+        console.log('client logged out');
+    }
+
     return (
         mounted && (
             <header className="fixed z-10 flex h-14 w-full items-center justify-between border-b bg-white px-16">
-                <Link href="/" className="h-7">
+                <Link href="/" className="block">
                     {/* <img className="h-full object-cover object-center" src="/next.svg" /> */}
                     <div className="text-3xl font-bold">DevZ</div>
                 </Link>
@@ -59,28 +68,42 @@ export default function Header() {
                         <Popover className="relative">
                             <Popover.Button
                                 as="button"
-                                className="flex items-center px-2 outline-none hover:text-primary-dark"
+                                className="flex items-center outline-none hover:text-primary-dark"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="h-6 w-6"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                                    />
-                                </svg>
+                                <div className="relative px-2 py-2">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="h-7 w-7"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                                        />
+                                    </svg>
+
+                                    {unreadNotiCount && (
+                                        <div className="absolute right-0 top-0 rounded-full bg-red-400 px-2 py-0.5 text-[11px] font-medium text-white">
+                                            {unreadNotiCount}
+                                        </div>
+                                    )}
+                                </div>
                             </Popover.Button>
 
-                            <Popover.Panel className="absolute right-0 top-full z-10 max-h-[500px] w-[450px] translate-y-3 overflow-y-auto rounded-lg border bg-white p-2 shadow-xl">
-                                {notis?.map((noti) => (
-                                    <NotiCard key={noti?._id} noti={noti} />
-                                ))}
+                            <Popover.Panel className="absolute right-0 top-full z-10 max-h-[500px] w-[450px] overflow-y-auto rounded-lg border bg-white p-2 shadow-xl">
+                                {({ close }) =>
+                                    notis?.map((noti) => (
+                                        <NotiCard
+                                            key={noti?._id}
+                                            noti={noti}
+                                            onClick={() => close()}
+                                        />
+                                    ))
+                                }
                             </Popover.Panel>
                         </Popover>
 
@@ -145,7 +168,7 @@ export default function Header() {
                                     )}
 
                                     <button
-                                        onClick={() => dispatch(userActions.logout())}
+                                        onClick={() => logout()}
                                         className="flex h-9 w-full min-w-[120px] items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-white transition hover:bg-primary-dark"
                                     >
                                         Logout
