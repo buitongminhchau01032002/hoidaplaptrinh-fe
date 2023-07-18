@@ -34,6 +34,8 @@ export default function DetailPostPage({ params }) {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const user = useSelector(userSelector);
     const [topicsByUser, setTopicsByUser] = useState(null);
+    const [savedPosts, setSavedPosts] = useState([]);
+
     const router = useRouter();
 
     const formik = useFormik({
@@ -62,12 +64,88 @@ export default function DetailPostPage({ params }) {
     useEffect(() => {
         getPost();
         getTopicsByUser();
+        getSavedPosts();
         // console.log(socket);
     }, []);
 
     useEffect(() => {
         getCommentsByPost(post);
     }, [post]);
+
+    function getSavedPosts() {
+        if (user) {
+            fetch(`${API}/me/saved-posts`, {
+                headers: {
+                    Authorization: 'Bearer ' + user?.token,
+                },
+            })
+                .then((res) => res.json())
+                .then((resJson) => {
+                    if (resJson.error_key) {
+                        console.log(resJson);
+                        return;
+                    }
+                    setSavedPosts(resJson.data);
+                });
+        }
+    }
+
+    function isSavedPost(id) {
+        if (savedPosts.length < 0) {
+            return false;
+        }
+        const index = savedPosts.findIndex((savedPost) => savedPost._id === id);
+        if (index !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function handleSavePost() {
+        setSavedPosts([...savedPosts, post]);
+        fetch(`${API}/me/saved-posts/${post?._id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + user?.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                toast.success('Save post successfully!');
+            })
+            .finally(() => {
+                getSavedPosts();
+            });
+    }
+
+    function handleUnsavePost() {
+        const newSavedPosts = savedPosts.filter((p) => p._id !== post._id);
+        setSavedPosts(newSavedPosts);
+        fetch(`${API}/me/saved-posts/${post?._id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + user?.token,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson.error_key) {
+                    console.log(resJson);
+                    return;
+                }
+                toast.success('Unsave post successfully!');
+            })
+            .finally(() => {
+                getSavedPosts();
+            });
+    }
 
     const isModOfTopic = useMemo(() => {
         if (!post) {
@@ -330,22 +408,45 @@ export default function DetailPostPage({ params }) {
                                 />
 
                                 {/* BOOKMARK */}
-                                <button className="mt-3 text-gray-600">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="h-6 w-6"
+                                {isSavedPost(post?._id) ? (
+                                    <button
+                                        className="mt-3 text-primary"
+                                        onClick={() => handleUnsavePost()}
                                     >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
-                                        />
-                                    </svg>
-                                </button>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            className="h-6 w-6"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="mt-3 text-gray-600"
+                                        onClick={() => handleSavePost()}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            className="h-6 w-6"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+                                            />
+                                        </svg>
+                                    </button>
+                                )}
                                 {user?._id === post?.author?._id && (
                                     <>
                                         {/* EDIT */}

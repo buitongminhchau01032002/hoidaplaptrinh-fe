@@ -75,8 +75,6 @@ export default function Home() {
         }
     }
 
-    console.log('save');
-
     function isSavedPost(id) {
         if (savedPosts.length < 0) {
             return false;
