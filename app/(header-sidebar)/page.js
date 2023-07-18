@@ -26,6 +26,10 @@ const SORT_TYPE = [
         value: 'most-score',
         name: 'Most score',
     },
+    {
+        value: 'most-view',
+        name: 'Most view',
+    },
 ];
 
 export default function Home() {
@@ -101,6 +105,9 @@ export default function Home() {
                     }
                     if (sortType === 'most-score') {
                         return b.score - a.score;
+                    }
+                    if (sortType === 'most-view') {
+                        return b.view_count - a.view_count;
                     }
                 })
         );

@@ -236,7 +236,7 @@ export default function ManagePostPage() {
                                 </div>
 
                                 {/* Main */}
-                                <div href={'/'} className="mt-4 block">
+                                <Link href={'/' + post._id} className="mt-4 block">
                                     <h2 className="text-lg font-bold">{post?.title}</h2>
                                     <div
                                         className="mt-2 h-[70px] overflow-y-hidden text-gray-600"
@@ -262,7 +262,7 @@ export default function ManagePostPage() {
                                             ))}
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
 
                             {/* RIGHT */}
