@@ -14,6 +14,11 @@ function TopicInput({ topic, onChange, modOfTopic }) {
     const showErorrNoti = () => toast.error('Something went wrong!');
     const user = useSelector(userSelector);
 
+    console.log('mods', modOfTopic);
+    const modStr = modOfTopic
+        ? modOfTopic.map((p) => p.first_name + ' ' + p.last_name).join(', ')
+        : '';
+
     function updateTopic() {
         fetch(`${API}/topics/${topic._id}`, {
             method: 'PATCH',
@@ -66,11 +71,8 @@ function TopicInput({ topic, onChange, modOfTopic }) {
     return !editing ? (
         <div className="flex border-b py-2">
             <div className="flex-1">
-                <span>{topic.name}</span>
-                {/* <span>|</span>
-                {modOfTopic?.map((mod) => (
-                    <span key={mod._id}>{mod.name}</span>
-                ))} */}
+                <p className="font-medium">{topic.name}</p>
+                <p className="text-sm text-gray-500">{modStr}</p>
             </div>
             <button
                 onClick={() => setEditing(true)}

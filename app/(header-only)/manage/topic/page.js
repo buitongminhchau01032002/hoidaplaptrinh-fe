@@ -31,7 +31,7 @@ export default function ManageTopicPage() {
                 headers: {
                     Authorization: 'Bearer ' + user?.token,
                 },
-            });
+            }).then((res) => res.json());
             if (resJson.error_key) {
                 return [];
             }
