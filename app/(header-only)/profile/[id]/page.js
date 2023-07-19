@@ -457,7 +457,9 @@ export default function Profile({ params }) {
 
                                                 {/* Date */}
                                                 <div className="text-sm text-gray-600">
-                                                    {moment(post?.created_at).format('DD/MM/YYYY')}
+                                                    {moment(post?.created_at).format(
+                                                        'HH:MM DD/MM/YYYY'
+                                                    )}
                                                 </div>
                                             </div>
 
