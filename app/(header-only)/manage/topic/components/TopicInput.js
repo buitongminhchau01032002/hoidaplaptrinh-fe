@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { API } from '~/constants';
 import { userSelector } from '~/redux/selectors';
 
-function TopicInput({ topic, onChange }) {
+function TopicInput({ topic, onChange, modOfTopic }) {
     const [editing, setEditing] = useState(false);
     const [name, setName] = useState(topic.name);
     const showUpdateNoti = () => toast.success('Update successfully!');
@@ -65,7 +65,13 @@ function TopicInput({ topic, onChange }) {
 
     return !editing ? (
         <div className="flex border-b py-2">
-            <div className="flex-1">{topic.name}</div>
+            <div className="flex-1">
+                <span>{topic.name}</span>
+                {/* <span>|</span>
+                {modOfTopic?.map((mod) => (
+                    <span key={mod._id}>{mod.name}</span>
+                ))} */}
+            </div>
             <button
                 onClick={() => setEditing(true)}
                 className="flex h-7 items-center justify-center rounded-md border border-primary px-5 text-sm font-medium text-primary-dark transition hover:bg-primary/10"

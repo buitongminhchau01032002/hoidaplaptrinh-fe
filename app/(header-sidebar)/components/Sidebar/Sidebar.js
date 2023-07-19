@@ -12,7 +12,18 @@ import colorizeCategory from '~/utils/colorizeCategory';
 
 export default function Sidebar() {
     const [topics, setTopics] = useState([]);
-    const [tags, setTags] = useState([]);
+    const tags = [
+        'thông báo',
+        'c++',
+        'algorithm',
+        'javascript',
+        'html',
+        'oop',
+        'thảo luận',
+        'công việc',
+        'học tập',
+        'tiếng anh',
+    ];
     const [trendingPosts, setTrendingPosts] = useState([]);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -32,15 +43,6 @@ export default function Sidebar() {
                     return;
                 }
                 setTrendingPosts(resJson.data);
-            });
-
-        fetch(`${API}/tags/popular`)
-            .then((res) => res.json())
-            .then((resJson) => {
-                if (resJson.error_key) {
-                    return;
-                }
-                setTags(resJson.data);
             });
     }, []);
     function handleTopicFilter(topic) {
@@ -82,17 +84,17 @@ export default function Sidebar() {
             <div className="mb-5">
                 <p className="text-xl font-semibold">Popular tags</p>
                 <div className="mt-3 flex flex-wrap">
-                    {tags.map((tag) => (
+                    {tags.map((tag, index) => (
                         <div
-                            key={tag._id}
+                            key={index}
                             style={{
                                 backgroundColor: colorizeCategory({
-                                    created_at: Math.floor(Math.random() * 60),
+                                    created_at: (tag.length % 6) * 10,
                                 }),
                             }}
                             className="mb-1 mr-1 rounded border bg-white px-2 py-1 text-sm"
                         >
-                            {tag.name}
+                            {tag}
                         </div>
                     ))}
                 </div>

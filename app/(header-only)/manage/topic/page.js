@@ -12,10 +12,41 @@ export default function ManageTopicPage() {
     const [topicName, setTopicName] = useState('');
     // const [topicContent, setTopicContent] = useState('');
 
+    const [modOfTopic, setModOfTopic] = useState({});
+
     const [topics, setTopics] = useState([]);
     useEffect(() => {
         getTopics();
     }, []);
+
+    console.log(modOfTopic);
+
+    useEffect(() => {
+        if (topics.length === 0) {
+            return;
+        }
+
+        const promiseMod = topics.map(async (topic) => {
+            const resJson = await fetch(`${API}/users/mods?topicId=${topic?._id}`, {
+                headers: {
+                    Authorization: 'Bearer ' + user?.token,
+                },
+            });
+            if (resJson.error_key) {
+                return [];
+            }
+            return resJson.data;
+        });
+        console.log(promiseMod);
+        Promise.all(promiseMod).then((modss) => {
+            const temp = {};
+            console.log('modss', modss);
+            modss.forEach((mods, index) => {
+                temp[topics[index]._id] = mods;
+            });
+            setModOfTopic(temp);
+        });
+    }, [topics]);
 
     function getTopics() {
         fetch(`${API}/topics`, {
@@ -92,7 +123,12 @@ export default function ManageTopicPage() {
             </div>
             <div className="mt-3 space-y-3 bg-white p-3">
                 {topics?.map((topic) => (
-                    <TopicInput topic={topic} key={topic._id} onChange={getTopics} />
+                    <TopicInput
+                        modOfTopic={modOfTopic[topic?._id]}
+                        topic={topic}
+                        key={topic._id}
+                        onChange={getTopics}
+                    />
                 ))}
             </div>
         </div>

@@ -498,7 +498,10 @@ export default function DetailPostPage({ params }) {
                                 {/* Top */}
                                 <div className="flex items-center justify-between">
                                     {/* User */}
-                                    <Link href={'profile/'} className="flex items-center">
+                                    <Link
+                                        href={'/profile/' + post?.author?._id}
+                                        className="flex items-center"
+                                    >
                                         <div className="flex items-center">
                                             <div className="h-7 w-7 overflow-hidden rounded-full bg-red-500">
                                                 <img
